@@ -1,0 +1,228 @@
+@font-face{font-family:SeirenDisplay;src:url('fonts/Cinzel.ttf') format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:SeirenSans;src:url('fonts/DMSans.ttf') format('truetype');font-weight:100 900;font-display:swap}
+:root{color-scheme:light;--bg:#e7e8df;--paper:#263a36;--muted:#5f6c63;--line:#687a6440;--accent:#557a70;--panel:#f4f2e7b8;--control-height:42px;--field:#f6f4ecb8;--glass:#f4f2e7b8}
+html{scroll-padding-top:16px}
+body.seiren{background:#e7e8df;color:var(--paper);font-family:SeirenSans,Arial,sans-serif;isolation:isolate}
+body.seiren::before{background:url('assets/seiren-background.png') center top / cover no-repeat;opacity:1;inset:0;position:fixed;z-index:-1}
+body.seiren header{max-width:1600px;margin:clamp(20px,7vh,72px) auto 0;height:74px;padding:8px 22px;align-items:center;justify-content:start;background:#f4f2e7b3;border:1px solid var(--line);border-radius:7px 7px 0 0;backdrop-filter:blur(2px);gap:24px}
+body.seiren .brand{font:500 26px SeirenDisplay,Georgia,serif;letter-spacing:6px;gap:16px;color:#29483e;flex-shrink:0}
+body.seiren .brand img{width:52px;height:60px;object-fit:contain}
+.studio-title{font:400 23px Georgia,serif;border-left:1px solid var(--line);padding-left:24px;white-space:nowrap}
+.seiren-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+body.seiren main{display:block;max-width:1600px;margin:auto;padding:0 0 32px}
+body.seiren .studio-heading,body.seiren .workflow{display:none}
+body.seiren .panel{background:var(--panel);color:var(--paper);border:1px solid var(--line);box-shadow:none;border-radius:5px;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+body.seiren button,body.seiren select,body.seiren input,body.seiren summary,body.seiren .file-button{font-family:SeirenSans,Arial,sans-serif!important;font-size:12px!important;letter-spacing:.015em!important;font-weight:500!important}
+body.seiren button:not(.chord-event):not(.bar-cue),body.seiren .melody-workspace button:not(.primary):not(.ghost),body.seiren .file-button,body.seiren .project-controls button{
+  background:var(--field)!important;background-image:none!important;border:1px solid var(--line)!important;border-radius:4px!important;color:var(--paper)!important;box-shadow:none!important;min-height:42px;padding:9px 15px;filter:none;transform:none
+}
+body.seiren button:not(.chord-event):not(.bar-cue):hover,body.seiren .file-button:hover{background:#dce5dccc!important;border-color:#6d8c7b!important}
+body.seiren button.primary,body.seiren button#generate,body.seiren button#play,body.seiren .melody-workspace button[aria-pressed=true],body.seiren button.active{background:#557a70!important;border-color:#557a70!important;color:#fffdf5!important}
+body.seiren button.primary:hover,body.seiren button#generate:hover,body.seiren button#play:hover{background:#41655b!important}
+body.seiren button:disabled{opacity:.4!important}
+body.seiren button:focus-visible,body.seiren input:focus-visible,body.seiren select:focus-visible,body.seiren summary:focus-visible,body.seiren a:focus-visible{outline:2px solid #355c50!important;outline-offset:3px}
+body.seiren button.ghost{border-color:transparent!important;background:transparent!important;padding:7px 10px!important}
+body.seiren input,body.seiren select{color:var(--paper);background:var(--field);border:1px solid var(--line);border-radius:4px;min-height:40px;padding:8px 10px}
+body.seiren input[type=checkbox]{min-height:0;accent-color:#557a70}
+body.seiren input[type=range]{accent-color:#557a70;min-height:20px;padding:0;background:transparent;border:0}
+body.seiren label,body.seiren p,body.seiren .hint,body.seiren .section-label,body.seiren .sectionhead h2,body.seiren .section-label span:last-child,body.seiren .harmonic-tools h2{color:var(--muted)}
+body.seiren h2,body.seiren h3{color:var(--paper)}
+body.seiren .file-button{display:inline-flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;height:42px}
+body.seiren .file-button input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+body.seiren #melodyWorkspace{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:10px;padding:0!important;border:0;background:transparent;backdrop-filter:none;margin:0;scroll-margin-top:16px}
+.seiren-topbar,.seiren-stylebar,.seiren-notices,.seiren-transport{grid-column:1/-1}
+.seiren-topbar{display:flex;gap:10px;align-items:center;padding:12px 16px;background:#f4f2e7b8;border:1px solid var(--line);border-top:0;backdrop-filter:blur(2px);margin-bottom:-10px}
+.seiren-topbar .melody-upload{flex:1;min-width:0}
+body.seiren #generate{font-size:14px!important;min-width:200px;white-space:nowrap;min-height:46px}
+body.seiren .melody-upload #ml-settings-button{font-size:12px!important;margin-left:16px;min-width:200px}
+body.seiren #ml-remove{margin-left:auto}
+body.seiren .demo-menu summary{border:1px solid var(--line);background:var(--field);border-radius:4px;min-height:42px;padding:0 15px}
+body.seiren .demo-menu>div{background:#f3f2e9;border:1px solid var(--line);border-radius:4px;box-shadow:0 8px 18px #30453620;z-index:40}
+.seiren-stylebar{display:flex;align-items:center;gap:16px;padding:8px 16px;background:#f4f2e7a8;border:1px solid var(--line);border-top:0;backdrop-filter:blur(2px)}
+body.seiren .melody-compare{margin:0;padding:0;flex:1;min-width:0}
+body.seiren .melody-compare [role=group]{display:flex;gap:6px;overflow:auto;padding:0;scrollbar-width:thin}
+body.seiren .melody-compare button{flex:1 0 auto;padding:8px 14px!important;min-height:36px!important}
+body.seiren .melody-compare button::before{display:none}
+.seiren-stylebar .style-control{display:flex;flex-direction:row;align-items:center;gap:10px;font-size:9px;white-space:nowrap}
+.seiren-stylebar .style-control select{width:175px;font-size:11px!important;min-height:36px}
+.seiren-notices{margin:-7px 2px -3px;min-height:0}
+body.seiren #ml-status{font-size:11px;color:#43574d;margin:0;max-width:100%;line-height:1.5}
+body.seiren #ml-error,body.seiren #ml-edit-error{color:#a02f25;background:#fff2eccc;border-radius:3px;padding:8px}
+.seiren-editor,.seiren-inspector{background:#f4f2e7b3;border:1px solid var(--line);border-radius:5px;backdrop-filter:blur(2px);min-width:0}
+.seiren-editor{padding:10px 12px}
+body.seiren .roll-tools{position:relative;top:auto;z-index:3;background:transparent;border:0;padding:0 0 8px;margin:0;align-items:center;gap:6px;overflow:visible;flex-wrap:wrap}
+body.seiren .roll-tools button{padding:7px 10px!important;min-width:40px;min-height:38px!important}
+body.seiren .roll-tools label{display:flex;flex-direction:row;gap:6px;align-items:center;font-size:10px;color:#5a6b60}
+body.seiren .roll-tools select{min-height:36px;min-width:58px}
+body.seiren .roll-tools button[aria-pressed=true]{box-shadow:none!important}
+.seiren-chord-actions{position:relative;margin:0 0 0 auto!important}
+body.seiren .seiren-chord-actions summary{font-size:11px!important;min-height:38px;padding:8px;cursor:pointer}
+.seiren-chord-actions[open] .score-actions{position:absolute;right:0;top:100%;z-index:30;display:flex;background:#f5f3ea;padding:10px;border:1px solid var(--line);border-radius:5px;box-shadow:0 8px 25px #30453626}
+body.seiren .score{position:relative;top:auto;z-index:1;margin:0;padding:0!important;border:0;border-radius:0;background:transparent;backdrop-filter:none;box-shadow:none;max-height:none!important;overflow:visible}
+.seiren-score-heading,.seiren-score-hint{position:absolute!important;width:1px;height:1px;padding:0!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+body.seiren .score .compact-chords{display:none!important}
+body.seiren .score.editor-visible:not(.expanded)>#grid{display:flex!important}
+body.seiren .grid{padding:0 0 8px;margin:0;mask-image:none;scrollbar-color:#8c9f93 transparent}
+body.seiren .bar{flex:0 0 25%;min-width:150px;border-left:1px solid var(--line);padding:0 9px}
+body.seiren .bar:last-child{border-right:1px solid var(--line)}
+body.seiren .bar:has(.chord-event:nth-child(3)){min-width:250px}
+body.seiren .bar:has(.chord-event:nth-child(4)){min-width:300px}
+body.seiren .bar-number{margin:0;color:#68786c}
+body.seiren .bar-number span{color:#68786c}
+body.seiren button.bar-cue{font:500 10px SeirenSans,Arial,sans-serif!important;color:#5c7165;background:transparent;box-shadow:none;border:0;padding:3px 1px;min-height:24px}
+body.seiren button.bar-cue[aria-pressed=true]{color:#254c3e;text-decoration:underline;text-underline-offset:4px}
+body.seiren .chord-lane{height:40px;border:0}
+body.seiren button.chord-event{color:#2a4339;background:transparent;border:0;border-radius:2px;box-shadow:none;padding:4px 8px;min-height:36px;justify-content:center}
+body.seiren .chord-event strong{font:500 min(var(--chord-size),20px) Georgia,serif}
+body.seiren .chord-event small,.seiren .beat-ruler,.seiren .bar-edit,.seiren .function{display:none}
+body.seiren .chord-event.chosen{background:#668e7520;box-shadow:inset 0 -2px #557a70}
+body.seiren .chord-event.sounding{background:#557a70;color:#fffdf4}
+body.seiren .bar.playing{background:#557a7010}
+body.seiren .melody-roll-scroll{height:clamp(340px,46vh,540px);background:#faf8f018;border:1px solid #6a7d6450;scrollbar-color:#8a9e91 #e8e9df88}
+body.seiren .melody-roll-scroll:focus-within{border-color:#557a70;box-shadow:0 0 0 1px #557a70}
+body.seiren .roll-background rect{fill:#fffdf520;stroke:#69776425}
+body.seiren .roll-background rect[fill='#091724']{fill:#536a5710}
+body.seiren .roll-background line{stroke:#4f6758}
+body.seiren .roll-ruler rect{fill:#f0f0e5}
+body.seiren .roll-ruler text{fill:#536b5d}
+body.seiren .roll-ruler text[y='18']{fill:#3c5c4d}
+body.seiren .roll-keys rect{fill:#f5f4e9;stroke:#849286}
+body.seiren .roll-keys rect[fill='#0a1520']{fill:#394c43}
+body.seiren .roll-keys text{fill:#617266}
+body.seiren .roll-note .note-body{fill:#668a7e;stroke:#456d5d;stroke-width:.6}
+body.seiren .roll-note .note-label{fill:#fffdf4}
+body.seiren .roll-note:hover .note-body{fill:#4c7463}
+body.seiren .roll-note.selected .note-body{fill:#395f50;stroke:#fffef8;stroke-width:2}
+body.seiren .roll-note.dragging .note-body{fill:#a49772;stroke:#294b3e}
+body.seiren .roll-harmony rect{fill:#a09c82;opacity:.8;height:8px}
+body.seiren .roll-playhead{stroke:#345d4d}
+body.seiren .roll-draft{fill:#89a18c;stroke:#355d4b}
+body.seiren .roll-marquee{fill:#557a7026;stroke:#476f5b}
+body.seiren #ml-roll-selection{color:#526d5c;font-size:11px;margin:5px 0}
+body.seiren .melody-audit{color:#496c59;background:#7199780d;border-left:2px solid #819b81;font-size:10px;padding:5px 8px;line-height:1.5;margin:8px 0 0}
+body.seiren #ml-work>details{margin:4px 0 0}
+body.seiren #ml-work>details summary{min-height:26px;font-size:10px!important;color:#617161}
+.seiren-legend{display:flex;align-items:center;gap:20px;font-size:11px;color:#587060;margin:8px 0 0}
+.seiren-legend span{display:flex;align-items:center;gap:7px}
+.seiren-legend span::before{content:'';width:9px;height:9px;border-radius:50%;background:#668a7e}
+.seiren-legend .legend-accompaniment::before{background:#a09c82}
+body.seiren .seiren-inspector{display:block;padding:20px 18px;grid-column:2;grid-row:4;align-self:stretch}
+.seiren-inspector h2{font:500 13px SeirenDisplay,Georgia,serif;letter-spacing:.08em;padding:0 0 16px;border-bottom:1px solid var(--line);margin:0 0 16px}
+body.seiren .seiren-inspector .performance-controls{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+body.seiren .seiren-inspector .performance-controls label:first-child{min-width:0}
+.seiren-inspector .performance-controls select{width:100%}
+body.seiren .seiren-inspector .mixer-disclosure{margin-top:16px;border-top:1px solid var(--line);padding-top:8px}
+body.seiren .seiren-inspector summary{color:#405e4e;min-height:34px;font-size:12px!important}
+body.seiren .seiren-inspector .melody-mix{display:grid;grid-template-columns:1fr 1fr;padding:0;background:transparent;border:0;gap:14px 10px}
+body.seiren .melody-mix label{font-size:10px;gap:4px;min-width:0;color:#536a5b}
+body.seiren .melody-mix label:has(input[type=range]){grid-column:1/-1;display:grid;grid-template-columns:1fr auto;align-items:center}
+body.seiren .melody-mix input[type=range]{grid-column:1/-1;width:100%;max-width:none;margin:0}
+body.seiren .melody-mix output{color:#486553}
+body.seiren .melody-mix #ml-mute{grid-column:1/-1;width:100%;font-size:10px!important;min-height:34px!important}
+body.seiren #ml-mute[aria-pressed=true]{background:#a46b5d!important;color:#fff!important}
+body.seiren #ml-basic{grid-column:1/-1;font-size:10px!important;min-height:32px!important}
+body.seiren .seiren-chord-tools{margin-top:16px;padding-top:8px;border-top:1px solid var(--line)}
+body.seiren .seiren-inspector .harmonic-tools{margin:0;padding:0;border:0}
+body.seiren .seiren-inspector .harmonic-tools h2{display:none}
+body.seiren .seiren-inspector .harmonic-tools button{font-size:10px!important;min-width:0;margin:3px;padding:8px!important}
+body.seiren .seiren-inspector .harmonic-tools #resolve{min-width:0}
+body.seiren .seiren-transport{position:sticky;bottom:10px;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 18px;background:#f1f1e5c7;backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:5px;box-shadow:0 3px 12px #294b3920;min-height:72px}
+body.seiren .seiren-transport button{min-height:44px!important;min-width:80px;padding:10px 18px!important}
+body.seiren .seiren-transport #position{color:#4f6758;font-size:11px;letter-spacing:.03em;margin-left:18px}
+body.seiren .seiren-transport #dockMidi{margin-left:auto}
+body.seiren .seiren-transport #loopButton[aria-pressed=true]{border-color:#557a70!important;box-shadow:inset 0 -2px #557a70!important}
+.seiren-empty{min-height:330px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:36px;text-align:center}
+.seiren-empty h2{font:400 30px Georgia,serif!important;letter-spacing:0}
+.seiren-empty p{max-width:370px;font-size:13px}
+.seiren-empty-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.seiren-more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px;align-items:start}
+body.seiren .seiren-drawer{margin:0;padding:0}
+body.seiren .seiren-drawer>summary{padding:12px 16px;cursor:pointer;color:#486151}
+body.seiren .seiren-drawer>.panel{background:transparent;border:0;padding:12px 16px;margin:0;backdrop-filter:none}
+body.seiren .seiren-drawer .basic-settings{display:flex;flex-wrap:wrap;gap:12px}
+body.seiren .seiren-drawer .basic-settings label{flex:1;min-width:100px}
+body.seiren .seiren-drawer .basic-settings select{width:100%}
+body.seiren .disclosure>summary,body.seiren .tool-drawer>summary{color:#435d4e}
+body.seiren .disclosure>summary small{color:#647768}
+body.seiren .project-controls{margin:12px 0;padding:12px 16px;gap:20px}
+body.seiren .project-controls label{display:flex;flex-direction:row;align-items:center;gap:8px;min-height:32px}
+body.seiren .project-controls>span{font-size:10px;color:#526858}
+body.seiren .tool-drawer{padding:0 16px;margin-bottom:10px}
+body.seiren .tool-drawer>summary{padding:10px 0;cursor:pointer}
+body.seiren .tool-drawer>summary small{margin-left:10px}
+body.seiren .tool-drawer>.panel{background:transparent;backdrop-filter:none}
+body.seiren [popover],body.seiren dialog,body.seiren .melody-workspace dialog{background:#f5f4eb;color:#2b4538;border:1px solid #7d927e;border-radius:7px;box-shadow:0 20px 60px #253f3b33;z-index:100;padding:24px}
+body.seiren [popover]::backdrop,body.seiren dialog::backdrop{background:#1d392b44;backdrop-filter:blur(2px)}
+body.seiren [popover] h3{font-family:SeirenDisplay,Georgia,serif}
+body.seiren #editorPreview{background:#dde6da;color:#2b4939;border-color:#93a68d}
+body.seiren .melody-review{color:#71532d;background:#f7eacbd9;border-color:#bba178}
+body.seiren #ml-warning{color:#876034}
+body.seiren #ml-edit-notice{color:#78643b}
+body.seiren #status:not(:empty){color:#fffef4;background:#3f6658;border-color:#70917b}
+body.seiren .arp-panel{background:#e7eadfa6;border-color:#94a38c}
+body.seiren .arp-heading h3{color:#415f4c}
+body.seiren .arp-heading span,body.seiren .arp-export-note,body.seiren .arp-preview{color:#556d5b}
+body.seiren .diagram,body.seiren .melody-card{background:#f4f2e7;color:#344c3e;border-color:#9eac96}
+body.seiren .diagram-title,body.seiren .scale-notes{color:#344c3e}
+body.seiren .scale-note,body.seiren .tab-caption,body.seiren .diagram details,body.seiren .melody-card p{color:#5f715f}
+body.seiren footer,body.seiren footer a{color:#486151}
+body.seiren footer{padding:16px 4px}
+body.seiren #ml-error[hidden],body.seiren [hidden]{display:none!important}
+@media(min-width:1700px){body.seiren header,body.seiren main{max-width:1600px}}
+@media(max-width:1670px){body.seiren header,body.seiren main{margin-left:24px;margin-right:24px}}
+@media(max-width:1200px){body.seiren #melodyWorkspace{grid-template-columns:minmax(0,1fr) 235px}.seiren-topbar{flex-wrap:wrap}.seiren-topbar .melody-upload{flex-basis:70%}body.seiren #generate{min-width:175px}.seiren-stylebar{gap:8px}.seiren-stylebar .style-control{font-size:0}.seiren-stylebar .style-control select{width:140px}body.seiren .melody-compare button{padding-inline:10px!important}.studio-title{font-size:20px}}
+@media(max-width:900px){body.seiren header{margin:20px 14px 0;gap:14px;padding:8px 14px}body.seiren main{margin:0 14px}.studio-title{display:none}.seiren-header-actions{gap:6px}body.seiren #melodyWorkspace{grid-template-columns:minmax(0,1fr)}body.seiren .seiren-inspector{grid-column:1;grid-row:auto;display:grid;grid-template-columns:1fr 2fr;gap:12px 20px}.seiren-inspector h2{grid-column:1/-1;margin:0;padding:0 0 10px}body.seiren .seiren-inspector .mixer-disclosure{border:0;padding:0;margin:0}body.seiren .seiren-inspector .seiren-chord-tools{grid-column:1/-1;margin:0}body.seiren .melody-upload #ml-settings-button{margin-left:auto;min-width:0}.seiren-stylebar{overflow:hidden}.seiren-more{grid-template-columns:1fr}.seiren-editor{grid-column:1}.seiren-transport{grid-column:1}body.seiren .seiren-transport{bottom:6px}.seiren-topbar .melody-upload{flex-basis:100%}body.seiren #generate{margin-left:auto;min-width:200px}body.seiren .melody-roll-scroll{height:440px}}
+@media(max-width:600px){
+ body.seiren header{margin:10px 8px 0;height:64px;padding:6px 10px;gap:8px}body.seiren main{margin:0 8px;padding-bottom:100px}
+ body.seiren .brand{font-size:20px;letter-spacing:3px;gap:8px}body.seiren .brand img{width:35px;height:46px}
+ body.seiren .seiren-header-actions button,body.seiren .seiren-header-actions .file-button{font-size:0!important;width:38px;min-width:38px;min-height:40px;padding:8px!important}
+ body.seiren .seiren-header-actions .ghost{font-size:15px!important;width:30px;min-width:30px}
+ .seiren-topbar{padding:10px;gap:8px}.seiren-topbar .melody-upload{gap:6px}
+ body.seiren .melody-upload>*{flex:0 0 auto;min-width:0}
+ body.seiren .melody-upload #ml-settings-button{order:5;flex:1 1 auto;min-height:40px;margin:0}
+ body.seiren #generate{flex:1;min-height:44px;min-width:0;font-size:13px!important}
+ .seiren-stylebar{display:block;padding:8px 10px}.seiren-stylebar .style-control{margin-top:7px;font-size:10px;justify-content:space-between}.seiren-stylebar .style-control select{width:calc(100% - 90px)}
+ body.seiren .melody-compare button{min-height:40px!important}.seiren-editor{padding:8px}
+ body.seiren .roll-tools{flex-wrap:nowrap;overflow-x:auto;gap:5px;padding-bottom:8px;align-items:end}
+ body.seiren .roll-tools label{flex-direction:column;gap:2px;font-size:9px}
+ body.seiren .roll-tools button{min-height:44px!important}
+ .seiren-chord-actions{margin-left:0!important}.seiren-chord-actions[open] .score-actions{position:fixed;top:auto;right:20px;bottom:90px}
+ body.seiren .score.editor-visible:not(.expanded){max-height:none!important;min-height:0!important;padding:0!important}
+ body.seiren .bar{flex-basis:45%;min-width:150px;padding:0 6px}body.seiren .grid{padding-bottom:8px}
+ body.seiren button.bar-cue{min-height:30px!important}.seiren-notices{margin:-4px 2px 0}
+ body.seiren .melody-roll-scroll{height:52vh;min-height:340px}
+ body.seiren .seiren-inspector{display:block;padding:16px}body.seiren .seiren-inspector h2{margin-bottom:12px}
+ body.seiren .seiren-inspector .mixer-disclosure{margin-top:12px}body.seiren .melody-mix{grid-template-columns:1fr 1fr!important}
+ body.seiren .seiren-inspector .seiren-chord-tools{margin-top:12px}
+ body.seiren .seiren-transport{position:fixed;bottom:0;left:0;right:0;border-radius:0;padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,1fr) 1.4fr;gap:6px;min-height:64px}
+ body.seiren .seiren-transport button{min-width:0!important;padding:8px 6px!important;font-size:11px!important;min-height:44px!important}
+ body.seiren .seiren-transport #position{display:none}body.seiren .seiren-transport #dockMidi{margin:0}
+ body.seiren .melody-workspace [popover]{max-width:calc(100vw - 24px);padding:18px}
+ body.seiren .seiren-drawer>.panel{padding:10px}body.seiren .project-controls{gap:12px;padding:12px}
+ .seiren-empty{padding:30px 12px;min-height:300px}.seiren-empty h2{font-size:25px!important}
+ body.seiren .tool-drawer{padding-inline:12px}body.seiren .tool-drawer>summary small{display:block;margin:3px 0;font-size:10px!important}
+ body.seiren input,body.seiren select{font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){body.seiren *{scroll-behavior:auto!important;transition:none!important}}
+/* Active controls remain legible after the original nodes are reparented. */
+body.seiren .melody-workspace button.chord-event{background:transparent!important;border:0!important;color:#2a4339!important;border-radius:2px!important;box-shadow:none!important;padding:4px 8px!important}
+body.seiren .melody-workspace button.chord-event.chosen{background:#668e7520!important;box-shadow:inset 0 -2px #557a70!important}
+body.seiren .melody-workspace button.chord-event.sounding{background:#557a70!important;color:#fffdf4!important}
+body.seiren .melody-workspace button.bar-cue{background:transparent!important;border:0!important;box-shadow:none!important;min-height:24px!important;padding:3px 1px!important;color:#5c7165!important}
+body.seiren .melody-workspace .melody-compare button[aria-pressed=true],body.seiren .melody-workspace .roll-tools button[aria-pressed=true]{background:#557a70!important;color:#fffdf5!important;border-color:#557a70!important}
+body.seiren .melody-workspace:not(.has-melody-editor) .roll-tools>button,body.seiren .melody-workspace:not(.has-melody-editor) .roll-tools>label{display:none}
+body.seiren .melody-workspace:not(.has-melody-editor) .roll-tools{justify-content:flex-end}
+
+body.seiren .brand small{font-family:SeirenSans,Arial,sans-serif;font-size:9px;letter-spacing:3px;color:#617365;margin-top:3px;font-weight:400}
+
+body.seiren .studio-title{font:400 14px SeirenSans,Arial,sans-serif;color:#7c897b;letter-spacing:.12em;padding-left:22px}
+
+body.seiren .melody-mix .audition-source{grid-column:1/-1;order:-3;font-size:11px;gap:6px}body.seiren .melody-mix .audition-source select{width:100%;font-size:12px!important}body.seiren .audition-help{grid-column:1/-1;order:-2;font-size:11px;line-height:1.6;margin:0;color:#5c705f}body.seiren .melody-mix select:disabled{opacity:.45}
+
+/* Keep the quiet Chinese subtitle visible on compact screens. */
+@media(max-width:900px){body.seiren header{position:relative}body.seiren .studio-title{display:block;position:absolute;left:82px;bottom:8px;border:0;padding:0;font-size:10px;letter-spacing:.08em}body.seiren .brand{padding-bottom:12px}}
+@media(max-width:600px){body.seiren .studio-title{left:53px;bottom:8px;font-size:9px}body.seiren .brand{padding-bottom:10px}}
+body.seiren .reading{max-width:900px;margin:40px auto;padding:24px;line-height:1.85;background:#f4f2e7e8;border:1px solid var(--line);border-radius:8px}
+body.seiren .reading h1{font:500 clamp(26px,5vw,40px) SeirenDisplay,serif;letter-spacing:.06em;line-height:1.4;margin:24px 0}
+body.seiren .reading h2{font-size:19px;margin-top:30px}body.seiren .reading p,body.seiren .reading li{color:#42584b}body.seiren .reading a{color:#315f50}body.seiren .reading nav{display:flex;gap:24px;flex-wrap:wrap}body.seiren .reading table{border-collapse:collapse;width:100%}body.seiren .reading td,body.seiren .reading th{border:1px solid var(--line);padding:10px;text-align:left}body.seiren .reading code{font-size:.9em}
+@media(max-width:900px){body.seiren .reading{margin:16px 12px;padding:20px}}
