@@ -1,5 +1,5 @@
 import {pickupTail} from './timeline.js';
-import { mountSeirenUI } from './seiren-ui.js?v=seiren-2';
+import { mountSeirenUI } from './seiren-ui.js?v=seiren-3';
 import {validateProject} from './project.js?v=seiren-2';
 import {arrangeMelody} from './melody-arranger.js?v=seiren-2';
 import {MelodyWorkspace} from './melody-workspace.js?v=seiren-2';

@@ -136,12 +136,19 @@ body.seiren .seiren-transport #loopButton[aria-pressed=true]{border-color:#557a7
 .seiren-empty p{max-width:370px;font-size:13px}
 .seiren-empty-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .seiren-more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px;align-items:start}
-body.seiren .seiren-drawer{margin:0;padding:0}
-body.seiren .seiren-drawer>summary{padding:12px 16px;cursor:pointer;color:#486151}
-body.seiren .seiren-drawer>.panel{background:transparent;border:0;padding:12px 16px;margin:0;backdrop-filter:none}
-body.seiren .seiren-drawer .basic-settings{display:flex;flex-wrap:wrap;gap:12px}
-body.seiren .seiren-drawer .basic-settings label{flex:1;min-width:100px}
-body.seiren .seiren-drawer .basic-settings select{width:100%}
+body.seiren .seiren-controls-panel{margin:0;padding:0}
+body.seiren .seiren-panel-title{margin:0;padding:14px 16px 10px;font:400 15px SeirenSans,Arial,sans-serif;color:#486151;border-bottom:1px solid var(--line)}
+body.seiren .seiren-group-title{margin:12px 0 8px;font:500 12px SeirenSans,Arial,sans-serif;color:#486151}
+body.seiren .seiren-group-title small{display:block;margin-top:4px;font-size:10px;font-weight:400;color:var(--muted)}
+body.seiren .seiren-controls-panel{min-width:0;overflow-wrap:anywhere}
+body.seiren .seiren-controls-panel .advanced-content>label{flex:1;min-width:120px}
+body.seiren .seiren-controls-panel .advanced-content select,body.seiren .seiren-controls-panel input{max-width:100%}
+body.seiren .seiren-controls-panel .arp-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.seiren .seiren-controls-panel .arp-mode{grid-column:1/-1}
+body.seiren .seiren-controls-panel>.panel{background:transparent;border:0;padding:12px 16px;margin:0;backdrop-filter:none}
+body.seiren .seiren-controls-panel .basic-settings{display:flex;flex-wrap:wrap;gap:12px}
+body.seiren .seiren-controls-panel .basic-settings label{flex:1;min-width:100px}
+body.seiren .seiren-controls-panel .basic-settings select{width:100%}
 body.seiren .disclosure>summary,body.seiren .tool-drawer>summary{color:#435d4e}
 body.seiren .disclosure>summary small{color:#647768}
 body.seiren .project-controls{margin:12px 0;padding:12px 16px;gap:20px}
@@ -198,7 +205,7 @@ body.seiren #ml-error[hidden],body.seiren [hidden]{display:none!important}
  body.seiren .seiren-transport button{min-width:0!important;padding:8px 6px!important;font-size:11px!important;min-height:44px!important}
  body.seiren .seiren-transport #position{display:none}body.seiren .seiren-transport #dockMidi{margin:0}
  body.seiren .melody-workspace [popover]{max-width:calc(100vw - 24px);padding:18px}
- body.seiren .seiren-drawer>.panel{padding:10px}body.seiren .project-controls{gap:12px;padding:12px}
+ body.seiren .seiren-controls-panel>.panel{padding:10px}body.seiren .project-controls{gap:12px;padding:12px}
  .seiren-empty{padding:30px 12px;min-height:300px}.seiren-empty h2{font-size:25px!important}
  body.seiren .tool-drawer{padding-inline:12px}body.seiren .tool-drawer>summary small{display:block;margin:3px 0;font-size:10px!important}
  body.seiren input,body.seiren select{font-size:16px!important}

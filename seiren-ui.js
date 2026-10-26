@@ -83,7 +83,7 @@ export function mountSeirenUI(lab) {
   host.prepend(top, styles, notices, editor, inspector);
   host.append(transport);
   transport.classList.add('seiren-transport');
-  // Advanced features remain original controls, in explicitly labelled drawers.
+  // Keep these controls visible and directly usable in permanent panels.
   const more = make('section', 'seiren-more');
   for (const [selector, label] of [
     ['.quick-entry', 'Chord input & inspiration'],
@@ -91,9 +91,21 @@ export function mountSeirenUI(lab) {
     ['.performance', 'Performance & arpeggiator']
   ]) {
     const section = document.querySelector(selector);
-    const details = make('details', 'seiren-drawer panel');
-    details.append(make('summary', '', label), section);
-    more.append(details);
+    const panel = make('section', 'seiren-controls-panel panel');
+    panel.setAttribute('aria-label', label);
+    panel.append(make('h2', 'seiren-panel-title', label), section);
+    // Retain the original controls and their listeners while removing disclosures.
+    for (const details of section.querySelectorAll('details')) {
+      const group = make('section', details.className + ' seiren-inline-group');
+      if (details.id) group.id = details.id;
+      const summary = details.querySelector(':scope > summary');
+      const heading = make('h3', 'seiren-group-title');
+      heading.append(...summary.childNodes);
+      summary.replaceWith(heading);
+      group.append(...details.childNodes);
+      details.replaceWith(group);
+    }
+    more.append(panel);
   }
   host.after(more);
   const syncEditorState = () => {
