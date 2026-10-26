@@ -1,8 +1,8 @@
-import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=2.0.0-alpha.9';
-import { parse } from './music.js?v=2.0.0-alpha.9';
-import { styles as legacyStyles } from './style-engine.js?v=2.0.0-alpha.9';
-import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=2.0.0-alpha.9';
-import { performance, voicePlan } from './performance.js?v=2.0.0-alpha.9';
+import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=seiren-2';
+import { parse } from './music.js?v=seiren-2';
+import { styles as legacyStyles } from './style-engine.js?v=seiren-2';
+import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=seiren-2';
+import { performance, voicePlan } from './performance.js?v=seiren-2';
 
 export const barLength = meter => (meter?.numerator || 4) * 4 / (meter?.denominator || 4);
 export function normalizeChart(chart, beats = 4) {
@@ -49,8 +49,8 @@ export function protectChart(chart, melody, { meter, key = {root:0,mode:'major'}
 }
 function spans(chart,beats){return normalizeChart(chart,beats).flatMap((bar,i)=>{let start=i*beats;return bar.chords.map(c=>{const s={...c,start,end:start+c.beats};start=s.end;return s;});});}
 // Generate in the feasible melody-aware space, then compare the final protected chart.
-export function rewriteWithMelody(candidate,melody,{meter,key,style='Jazz',seed=0,previous=[],policy='strict',melodyFirst=false,pickup=true}={}){
- const beats=barLength(meter),result=melodyFirst?arrangeMelody(melody,{key,seed,policy,beatsPerBar:beats,meter,pickup,style,previous:spans(previous,beats)}):harmonize(melody,{key,seed,policy,harmonicGrid:beats===3?(meter?.denominator===8?1.5:1):.5,beatsPerBar:beats,spanBeats:beats===3?3:beats/2,...profile(style),preferred:spans(candidate,beats),avoid:spans(previous,beats)});
+export function rewriteWithMelody(candidate,melody,{meter,key,style='Jazz',seed=0,previous=[],policy='strict',melodyFirst=false,pickup=true,pickupBeats}={}){
+ const beats=barLength(meter),result=melodyFirst?arrangeMelody(melody,{key,seed,policy,beatsPerBar:beats,meter,pickup,pickupBeats,style,previous:spans(previous,beats)}):harmonize(melody,{key,seed,policy,harmonicGrid:beats===3?(meter?.denominator===8?1.5:1):.5,beatsPerBar:beats,spanBeats:beats===3?3:beats/2,...profile(style),preferred:spans(candidate,beats),avoid:spans(previous,beats)});
  return preserveLocks(chartFromSegments(result.segments,beats,result.totalBeats),previous,beats).map(bar=>{const chords=[];for(const c of bar.chords){if(chords.at(-1)?.symbol===c.symbol&&!c.locked&&!chords.at(-1).locked)chords.at(-1).beats+=c.beats;else chords.push({...c});}return {...bar,chords};});
 }
 // The groove belongs to the bar, never to the number or length of harmony repairs.

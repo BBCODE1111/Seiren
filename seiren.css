@@ -226,3 +226,8 @@ body.seiren .reading{max-width:900px;margin:40px auto;padding:24px;line-height:1
 body.seiren .reading h1{font:500 clamp(26px,5vw,40px) SeirenDisplay,serif;letter-spacing:.06em;line-height:1.4;margin:24px 0}
 body.seiren .reading h2{font-size:19px;margin-top:30px}body.seiren .reading p,body.seiren .reading li{color:#42584b}body.seiren .reading a{color:#315f50}body.seiren .reading nav{display:flex;gap:24px;flex-wrap:wrap}body.seiren .reading table{border-collapse:collapse;width:100%}body.seiren .reading td,body.seiren .reading th{border:1px solid var(--line);padding:10px;text-align:left}body.seiren .reading code{font-size:.9em}
 @media(max-width:900px){body.seiren .reading{margin:16px 12px;padding:20px}}
+
+body.seiren .bar.pickup-bar{flex-basis:calc(25% * var(--pickup-ratio));min-width:0;padding:0 5px;background:#b9a87c18;overflow:hidden}
+body.seiren .pickup-nc{display:block;font-size:13px;color:#6d725e;margin:12px 0;white-space:nowrap}
+body.seiren .pickup-bar .bar-cue{font-size:9px!important;white-space:nowrap}
+@media(max-width:600px){body.seiren .bar.pickup-bar{flex-basis:calc(45% * var(--pickup-ratio))}}

@@ -1,6 +1,6 @@
-import { parse } from './engine/music.js?v=2.0.0-alpha.9';
-import { performance } from './engine/performance.js?v=2.0.0-alpha.9';
-import { mod, noteNames } from './analysis.js?v=2.0.0-alpha.9';
+import { parse } from './music.js?v=seiren-2';
+import { performance } from './performance.js?v=seiren-2';
+import { mod, noteNames } from './analysis.js?v=seiren-2';
 
 export const styles = {
   basic: { label: '基本和弦', pattern: 'sustain', qualities: ['', 'm', 'sus2', 'sus4'], voicing: 'close', description: '先建立清楚的三和弦與穩定長音。' },
@@ -29,10 +29,10 @@ export function compatible(pitch, melodyPitch, policy='strict', chord=null) {
 export function chordCompatible(chord,note,policy='musical') {
  return chord.pcs.every(pc=>compatible(36+pc,note.pitch,policy,chord));
 }
-export function validateMelody(notes) {
+export function validateMelody(notes, {pickupBeats = 32} = {}) {
   if (!notes.length) throw Error('請先匯入旋律或載入範例。');
   if (notes.length > 2000) throw Error('第一版最多 2,000 個旋律音，請先截成較短片段。');
-  for (const n of notes) if (!Number.isInteger(n.pitch) || n.pitch < 0 || n.pitch > 127 || !Number.isFinite(n.start) || !Number.isFinite(n.end) || n.start < 0 || n.end <= n.start) throw Error('旋律音高／起訖時間無效。');
+  for (const n of notes) if (!Number.isInteger(n.pitch) || n.pitch < 0 || n.pitch > 127 || !Number.isFinite(n.start) || !Number.isFinite(n.end) || n.start < -pickupBeats - 1e-7 || n.end <= n.start) throw Error('旋律音高／起訖時間無效。');
   if (Math.max(...notes.map(n => n.end)) > 512) throw Error('第一版最多 512 個四分音符拍，請分段匯入。');
 }
 function random(seed) { let state = seed >>> 0; return () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296; }; }
@@ -62,7 +62,7 @@ export function harmonize(melody, { key = { root: 0, mode: 'major' }, style: sty
   validateMelody(melody);
   if (!(beatsPerBar > 0 && beatsPerBar <= 32)) throw Error('不支援這個拍號。');
   const cfg = { ...(styles[styleId] || styles.basic), ...(qualities ? { qualities } : {}) }, pool = candidatePool(cfg), rng = random(seed);
-  const scale = scaleOf(key), last = Math.max(...melody.map(n => n.end)), totalBeats = Math.ceil(last / beatsPerBar) * beatsPerBar;
+  const scale = scaleOf(key), last = Math.max(...melody.map(n => n.end)), totalBeats = Math.max(1, Math.ceil(last / beatsPerBar)) * beatsPerBar;
   const pieces = [];
   function split(start, end, depth = 0) {
     const candidates = candidatesFor(start, end, melody, pool, policy);

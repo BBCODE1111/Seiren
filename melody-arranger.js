@@ -1,7 +1,7 @@
-import {parse,pitchName,spellChord} from './music.js?v=2.0.0-alpha.9';
-import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=2.0.0-alpha.9';
-import {mod} from './analysis.js?v=2.0.0-alpha.9';
-import {styles} from './style-engine.js?v=2.0.0-alpha.9';
+import {parse,pitchName,spellChord} from './music.js?v=seiren-2';
+import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=seiren-2';
+import {mod} from './analysis.js?v=seiren-2';
+import {styles} from './style-engine.js?v=seiren-2';
 
 export function phraseNotes(melody,start,end,tolerance=.08){
  return melody.filter(n=>overlaps(n,{start,end})&&!(n.start<start&&n.end<start+tolerance)&&!(n.end>end&&n.start>end-tolerance));
@@ -53,12 +53,12 @@ function colorCore(core,active,style,seed,policy,key,previous){
  if(['alberti','classical'].includes(pattern)&&degree===0&&seed%2)chosen+='/'+pitchName(core.root+7,key);
  return chosen;
 }
-export function arrangeMelody(melody,{key={root:0,mode:'major'},style='basic',seed=0,beatsPerBar=4,policy='musical',previous=[],pickup=true,meter}={}){
- validateMelody(melody);const totalBeats=Math.ceil(Math.max(...melody.map(n=>n.end))/beatsPerBar)*beatsPerBar,segments=[];
+export function arrangeMelody(melody,{key={root:0,mode:'major'},style='basic',seed=0,beatsPerBar=4,policy='musical',previous=[],pickup=true,pickupBeats,meter}={}){
+ validateMelody(melody);const totalBeats=Math.max(1,Math.ceil(Math.max(...melody.map(n=>n.end))/beatsPerBar))*beatsPerBar,segments=[];
  let fallback;
  for(let start=0;start<totalBeats-1e-7;start+=beatsPerBar){
   const end=start+beatsPerBar;
-  if(start===0&&pickup&&detectPickup(melody,beatsPerBar)){segments.push({start,end,symbol:'N.C.',core:'N.C.'});continue;}
+  if(start===0&&pickupBeats===undefined&&pickup&&detectPickup(melody,beatsPerBar)){segments.push({start,end,symbol:'N.C.',core:'N.C.'});continue;}
   const half=start+(meter?.denominator===8?beatsPerBar/2:beatsPerBar===3?2:beatsPerBar/2);
   const whole=coreCandidates(melody,start,end,key,policy),left=coreCandidates(melody,start,half,key,policy),right=coreCandidates(melody,half,end,key,policy);
   const strongArrival=melody.some(n=>Math.abs(n.start-half)<.08&&n.end-n.start>=.65);

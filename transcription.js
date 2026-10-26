@@ -1,4 +1,4 @@
-import {estimateTempo,inferKeys} from './analysis.js?v=2.0.0-alpha.9';
+import {estimateTempo,inferKeys} from './analysis.js?v=seiren-2';
 // File labels are source metadata, never acoustic ground truth. Show their provenance.
 export function sourceHints(name){
  const text=name.replace(/\.[^.]+$/,'');
@@ -44,7 +44,7 @@ export function transcriptionResult(notes,duration,name){
  const bpm=hints.bpm||tempo.bpm,key=hints.key||keys.candidates[0];
  // Labelled loops retain leading rests. An unlabelled phrase still needs beat-one review.
  const offset=hints.bpm?0:notes[0].start;
- return {notes,tempo:{...tempo,bpm},key,offset,hints,coverage:notes.reduce((s,n)=>s+n.end-n.start,0)/duration,
+ return {notes,tempo:{...tempo,bpm},key,offset,downbeatTime:offset,hints,coverage:notes.reduce((s,n)=>s+n.end-n.start,0)/duration,
   reviewRequired:!hints.bpm||!hints.key,
-  warnings:[hints.bpm?'速度採檔名 BPM 標記，保留開頭休止。':'速度由旋律起音估計；自由節奏人聲無法單靠起音唯一確定 BPM。',hints.key?'調性採檔名標記；音高仍由音訊辨識，不強制貼齊音階。':'調性是候選，請比較相對大小調並確認。','辨識主旋律，非多軌分離。先比較原音與辨識音符；顫音、滑音及殘響仍可能需要修正。']};
+  warnings:[hints.bpm?'速度採檔名 BPM 標記，保留開頭休止。':'速度與第 1 拍尚未確認。先核對 BPM；若有弱起，請用 DOWNBEAT 點選 BAR 1 的強拍音。',hints.key?'調性採檔名標記；音高仍由音訊辨識，不強制貼齊音階。':'調性是候選，請比較相對大小調並確認。','辨識主旋律，非多軌分離。先比較原音與辨識音符；顫音、滑音及殘響仍可能需要修正。']};
 }

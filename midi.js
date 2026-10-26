@@ -1,32 +1,49 @@
+import {pickupExportLayout,shiftNotes,validatePickup} from './timeline.js';
 // Standard MIDI File types 0/1, PPQ timing. No server or third-party parser.
 const utf8 = new TextEncoder();
 const clip = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 export function normalizeTempoMap(map = []) {
-  const byBeat = new Map([[0, { beat: 0, bpm: 120 }]]);
-  for (const t of [...map].sort((a, b) => a.beat - b.beat)) {
-    if (Number.isFinite(t.beat) && t.beat >= 0 && Number.isFinite(t.bpm) && t.bpm > 0)
-      byBeat.set(t.beat, { beat: t.beat, bpm: t.bpm });
-  }
+  const byBeat = new Map();
+  for (const t of map) if (Number.isFinite(t.beat) && Number.isFinite(t.bpm) && t.bpm > 0)
+    byBeat.set(t.beat, { beat: t.beat, bpm: t.bpm });
+  const sorted = [...byBeat.values()].sort((a, b) => a.beat - b.beat);
+  if (!byBeat.has(0)) byBeat.set(0, { beat: 0, bpm: sorted.filter(t => t.beat <= 0).at(-1)?.bpm || 120 });
   return [...byBeat.values()].sort((a, b) => a.beat - b.beat);
 }
-
-export function beatToSeconds(beat, map) {
-  const tempos = normalizeTempoMap(map);
-  let seconds = 0;
-  for (let i = 0; i < tempos.length; i++) {
-    const t = tempos[i], end = Math.min(beat, tempos[i + 1]?.beat ?? beat);
-    if (end > t.beat) seconds += (end - t.beat) * 60 / t.bpm;
-    if (end >= beat) break;
-  }
-  return seconds;
+export function trimTempoMap(map, startBeat=0) {
+  return normalizeTempoMap([{beat:startBeat,bpm:tempoAt(startBeat,map)},...normalizeTempoMap(map).filter(t=>t.beat>startBeat)]);
 }
-
+export function tempoAt(beat, map) {
+  const tempos = normalizeTempoMap(map);
+  return (tempos.filter(t => t.beat <= beat).at(-1) || tempos[0]).bpm;
+}
+export function beatToSeconds(beat, map) {
+  const tempos = normalizeTempoMap(map), lo = Math.min(0, beat), hi = Math.max(0, beat);
+  let at = lo, bpm = (tempos.filter(t => t.beat <= lo).at(-1) || tempos[0]).bpm, seconds = 0;
+  for (const t of tempos) if (t.beat > lo && t.beat < hi) {
+    seconds += (t.beat - at) * 60 / bpm; at = t.beat; bpm = t.bpm;
+  }
+  seconds += (hi - at) * 60 / bpm;
+  return beat < 0 ? -seconds : seconds;
+}
 export function secondsToBeat(seconds, map) {
   const tempos = normalizeTempoMap(map);
-  let remaining = Math.max(0, seconds);
-  for (let i = 0; i < tempos.length; i++) {
-    const t = tempos[i], span = ((tempos[i + 1]?.beat ?? Infinity) - t.beat) * 60 / t.bpm;
+  if (seconds < 0) {
+    let at = 0, remaining = -seconds;
+    const previous = tempos.filter(t => t.beat < 0).reverse();
+    for (const t of previous) {
+      const span = (at - t.beat) * 60 / t.bpm;
+      if (remaining <= span) return at - remaining * t.bpm / 60;
+      remaining -= span; at = t.beat;
+    }
+    return at - remaining * tempos[0].bpm / 60;
+  }
+
+  let remaining = seconds;
+  const positive = tempos.filter(t => t.beat >= 0);
+  for (let i = 0; i < positive.length; i++) {
+    const t = positive[i], span = ((positive[i + 1]?.beat ?? Infinity) - t.beat) * 60 / t.bpm;
     if (remaining <= span) return t.beat + remaining * t.bpm / 60;
     remaining -= span;
   }
@@ -54,7 +71,7 @@ export function parseMidi(input) {
   if (!trackCount || trackCount > 256) throw Error('MIDI 軌數不合理。');
   pos += headerLength - 6;
   const tracks = [], tempoMap = [], meters = [], warnings = [];
-  let keyHint = null, events = 0;
+  let keyHint = null, events = 0, pickupMetadata = null;
   for (let index = 0; index < trackCount; index++) {
     limit = bytes.length;
     if (text(4) !== 'MTrk') throw Error('MIDI track chunk 不正確。');
@@ -76,6 +93,12 @@ export function parseMidi(input) {
         running = 0;
         const type = u8(), size = vlq(); need(size);
         const data = bytes.slice(pos, pos + size); pos += size;
+        if (type === 0x7f) {
+          const text = new TextDecoder().decode(data);
+          if (text.startsWith('SEIREN_PICKUP:')) {
+            try { pickupMetadata = JSON.parse(text.slice(14)); } catch { throw Error('Invalid pickup metadata.'); }
+          }
+        }
         if (type === 0x03) trackName = new TextDecoder().decode(data).slice(0, 120);
         if (type === 0x51 && size === 3) {
           const us = data[0] * 65536 + data[1] * 256 + data[2];
@@ -121,10 +144,28 @@ export function parseMidi(input) {
     }
   }
   if (!tracks.length) throw Error('沒有可用旋律音符（鼓軌 CH 10 已排除）。');
-  const meter = meters[0] || { numerator: 4, denominator: 4, beat: 0 };
-  if (meters.some(m => m.numerator !== meter.numerator || m.denominator !== meter.denominator)) throw Error('這份 MIDI 會變換拍號；第一版請分段匯出固定拍號旋律。');
+  let meter = meters[0] || { numerator: 4, denominator: 4, beat: 0 }, pickupBeats = 0, shift = 0;
+  const changes = meters.filter((m, i) => !i || m.numerator !== meters[i - 1].numerator || m.denominator !== meters[i - 1].denominator);
+  if (pickupMetadata) {
+    const { pickup, origin, mode, mainMeter } = pickupMetadata;
+    validatePickup(pickup, mainMeter);
+    if (!mainMeter || !Number.isInteger(mainMeter.numerator) || mainMeter.numerator < 1 || mainMeter.numerator > 32 || ![1,2,4,8,16,32].includes(mainMeter.denominator)) throw Error('Invalid pickup meter.');
+    const layout = pickupExportLayout(pickup, mainMeter, mode);
+    if (Math.abs(origin - layout.shift) > 1 / division || !Number.isFinite(origin)) throw Error('Invalid pickup origin.');
+    if (changes.length > (mode === 'short' ? 2 : 1) || changes.some(m => m.beat !== 0 && Math.abs(m.beat - origin) > 1 / division)) throw Error('Unsupported meter changes.');
+    meter = {...mainMeter, beat:0}; pickupBeats = pickup; shift = origin;
+  } else if (changes.length > 1) {
+    // A single short opening measure is a pickup; general mixed meters remain unsupported.
+    const [first, main] = changes, shortLength = first.numerator * 4 / first.denominator;
+    if (changes.length !== 2 || first.beat !== 0 || Math.abs(main.beat - shortLength) > 1 / division || shortLength >= main.numerator * 4 / main.denominator)
+      throw Error('這份 MIDI 會變換拍號；請分段匯出固定拍號旋律。');
+    meter = {...main,beat:0}; pickupBeats = shift = shortLength;
+  }
+  if (shift) for (const track of tracks) track.notes = shiftNotes(track.notes, -shift);
+  if (tracks.some(t => t.notes.some(n => n.start < -pickupBeats - 1 / division))) throw Error('Notes precede the pickup measure.');
   if (!tempoMap.length) warnings.push('MIDI 沒有速度資訊，依標準暫用 120 BPM；請手動確認。');
-  return { tracks, tempoMap: normalizeTempoMap(tempoMap), hasTempo: tempoMap.length > 0, meter, keyHint, warnings, format };
+  return { tracks, tempoMap: trimTempoMap(normalizeTempoMap(tempoMap).map(t => ({...t,beat:t.beat-shift})), -pickupBeats), hasTempo: tempoMap.length > 0, meter, pickupBeats, keyHint, warnings, format };
+
 }
 
 const be16 = n => [(n >> 8) & 255, n & 255];
@@ -143,13 +184,22 @@ function trackChunk(name, events) {
   }
   data.push(0, 0xff, 0x2f, 0); return chunk('MTrk', data);
 }
-export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [] }) {
-  const ppq = 960;
-  const tempos = normalizeTempoMap(tempoMap).map(t => {
+export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [], pickupBeats = 0, pickupMode = 'padded' }) {
+  const ppq = 960, layout = pickupExportLayout(pickupBeats, meter, pickupMode), shift = layout.shift;
+  for (const n of [...melody, ...accompaniment]) if (n.start < -pickupBeats - 1e-7) throw Error('Note precedes BAR 0.');
+  melody = shiftNotes(melody, shift); accompaniment = shiftNotes(accompaniment, shift);
+  chordMarkers = chordMarkers.map(c => ({...c,start:c.start+shift}));
+  const fileTempos = [{beat:0,bpm:tempoAt(-shift,tempoMap)},...normalizeTempoMap(tempoMap).filter(t=>t.beat>-shift).map(t=>({...t,beat:t.beat+shift}))];
+  const tempos = normalizeTempoMap(fileTempos).map(t => {
     const us = clip(Math.round(60000000 / t.bpm), 1, 0xffffff);
     return { tick: Math.round(t.beat * ppq), order: 0, bytes: [0xff, 0x51, 3, us >> 16, (us >> 8) & 255, us & 255] };
   });
-  tempos.push({ tick: 0, order: 1, bytes: [0xff, 0x58, 4, meter.numerator, Math.log2(meter.denominator), 24, 8] });
+  tempos.push({ tick: 0, order: 1, bytes: [0xff, 0x58, 4, layout.firstMeter.numerator, Math.log2(layout.firstMeter.denominator), 24, 8] });
+  if (pickupBeats) {
+    if (pickupMode === 'short') tempos.push({tick:Math.round(shift*ppq),order:1,bytes:[0xff,0x58,4,meter.numerator,Math.log2(meter.denominator),24,8]});
+    const data = [...utf8.encode('SEIREN_PICKUP:'+JSON.stringify({pickup:pickupBeats,origin:shift,mode:pickupMode,mainMeter:meter}))];
+    tempos.push({tick:0,order:0,bytes:[0xff,0x7f,...vlqBytes(data.length),...data]});
+  }
   for(const c of chordMarkers){const data=[...utf8.encode(c.symbol)];tempos.push({tick:Math.round(c.start*ppq),order:2,bytes:[0xff,6,...vlqBytes(data.length),...data]});}
   const makeNotes = (notes, channel, name) => {
     const events = [];

@@ -159,8 +159,8 @@ export function analyzePCM(samples, sampleRate = 11025, progress = () => {}) {
   ] };
 }
 
-export function audioNotesToBeats(notes, bpm, offset = 0) {
+export function audioNotesToBeats(notes, bpm, downbeatTime = 0) {
   if (!Number.isFinite(bpm) || bpm < 30 || bpm > 300) throw Error('BPM 需介於 30–300。');
-  if (!Number.isFinite(offset) || offset < 0 || notes.some(n => n.start < offset - .00001)) throw Error('第 1 拍不能晚於最早旋律音；弱起請把第 1 拍往前移。');
-  return notes.map(n => ({ ...n, start: Math.max(0, (n.start - offset) * bpm / 60), end: (n.end - offset) * bpm / 60 }));
+  if (!Number.isFinite(downbeatTime)) throw Error('Downbeat time must be finite.');
+  return notes.map(n => ({ ...n, start: (n.start - downbeatTime) * bpm / 60, end: (n.end - downbeatTime) * bpm / 60 }));
 }
