@@ -1,4 +1,4 @@
-import {estimateTempo,inferKeys} from './analysis.js?v=seiren-2';
+import {estimateTempo,inferKeys} from './analysis.js?v=seiren-4';
 // File labels are source metadata, never acoustic ground truth. Show their provenance.
 export function sourceHints(name){
  const text=name.replace(/\.[^.]+$/,'');
@@ -38,9 +38,9 @@ export function decodeMelody(frames,onsets=[],{frameTime=i=>i*256/22050,minFrame
  }
  return articulated.filter(r=>r.endFrame-r.startFrame>=minFrames).map(r=>({pitch:r.pitch,start:Math.max(0,frameTime(r.startFrame)),end:frameTime(r.endFrame),velocity:.7,confidence:Math.min(1,r.sum/(r.endFrame-r.startFrame))}));
 }
-export function transcriptionResult(notes,duration,name){
+export function transcriptionResult(notes,duration,name,features=null){
  if(!notes.length)throw Error('未辨識出穩定旋律；請換乾聲或使用旋律 MIDI。');
- const hints=sourceHints(name),tempo=estimateTempo(notes.map(n=>n.start)),keys=inferKeys(notes);
+ const hints=sourceHints(name),tempo=features?{bpm:features.bpm,candidates:features.candidates.map(c=>c.bpm),score:features.confidence,confidence:features.confidence>=.7?'起音較清楚；請確認半速／倍速':'節拍不明確，請比較候選或 TAP',method:'spectral-flux-dp'}:estimateTempo(notes.map(n=>n.start)),keys=inferKeys(notes);
  const bpm=hints.bpm||tempo.bpm,key=hints.key||keys.candidates[0];
  // Labelled loops retain leading rests. An unlabelled phrase still needs beat-one review.
  const offset=hints.bpm?0:notes[0].start;

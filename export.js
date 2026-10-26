@@ -1,5 +1,5 @@
-import { encodeMidi, parseMidi } from './midi.js?v=seiren-2';
-import { auditHarmony } from './harmony.js?v=seiren-2';
+import { encodeMidi, parseMidi } from './midi.js?v=seiren-4';
+import { auditHarmony } from './harmony.js?v=seiren-4';
 
 export function encodeAuditedMidi(project) {
  const reference=project.melody||[],policy=project.policy||'strict';

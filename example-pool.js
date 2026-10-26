@@ -1,8 +1,8 @@
-import {styles} from './style-engine.js?v=seiren-2';
-import {songs} from './song-pool.js?v=seiren-2';
-import {parseChart,serialize} from './solutions.js?v=seiren-2';
-import {studyMood,moodCategory,exampleTitle} from './example-titles.js?v=seiren-2';
-import {contrastExamples,moodOrder} from './contrast-examples.js?v=seiren-2';
+import {styles} from './style-engine.js?v=seiren-4';
+import {songs} from './song-pool.js?v=seiren-4';
+import {parseChart,serialize} from './solutions.js?v=seiren-4';
+import {studyMood,moodCategory,exampleTitle} from './example-titles.js?v=seiren-4';
+import {contrastExamples,moodOrder} from './contrast-examples.js?v=seiren-4';
 export function examplePool(style){
  const cfg=styles[style];if(!cfg)return [];
  const order=cfg.moodOrder||moodOrder;

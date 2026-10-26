@@ -1,6 +1,6 @@
-import {playMelodyTone} from './melody-synth.js?v=seiren-2';
-import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-2';
-import {Piano} from './piano.js?v=seiren-2';
+import {playMelodyTone} from './melody-synth.js?v=seiren-4';
+import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-4';
+import {Piano} from './piano.js?v=seiren-4';
 import {pickupTail,validatePickup} from './timeline.js';
 
 // First pass may contain BAR 0. Every following pass has its own BAR 1 origin.
@@ -29,7 +29,7 @@ export class MelodyPlayer {
   for(const source of this.sources)if(source.cycle>=this.stopCycle||!enabled&&source.pickup){try{source.stop();}catch{}}
  }
  tone(note,when,duration){return playMelodyTone(this.context,this.melodyBus,this.voices,note,when,duration,this.instrument);}
- async play({melody,accompaniment,tempoMap,totalBeats,sourceBuffer=null,offset=0,downbeatTime=offset,mode='notes',instrument='warm',melodyGain=.35,harmonyGain=1,startBeat=0,loopStartBeat=Math.max(0,startBeat),pickupBeats=0,repeatPickup=true,loop=false,countIn=false,metronome=false,meter={numerator:4,denominator:4},onTick=()=>{},onStop=()=>{}}){
+ async play({melody,accompaniment,tempoMap,totalBeats,sourceBuffer=null,offset=0,downbeatTime=offset,mode='notes',instrument='warm',harmonyInstrument='piano',bassInstrument='piano',melodyGain=.35,harmonyGain=1,startBeat=0,loopStartBeat=Math.max(0,startBeat),pickupBeats=0,repeatPickup=true,loop=false,countIn=false,metronome=false,meter={numerator:4,denominator:4},onTick=()=>{},onStop=()=>{}}){
   validatePickup(pickupBeats,meter);
   if(!Number.isFinite(downbeatTime)||startBeat< -pickupBeats-1e-7||loopStartBeat<0)throw Error('Invalid downbeat or pickup start.');
   this.stop();const generation=this.generation;await this.unlock();if(generation!==this.generation)return false;
@@ -79,7 +79,8 @@ export class MelodyPlayer {
      const n=events[i];if(n.pickupRepeat&&!this.loop)continue;
      const key=c+':'+i,attack=origin+(n.seconds-fromSeconds),when=Math.max(now,attack),end=origin+(n.endSeconds-fromSeconds);
      if(end<=now||attack>now+.16||this.scheduled.has(key)||end-when<.002)continue;
-     const voice=n.melody?this.tone(n,when,end-when):this.piano.note(n.pitch,when,end-when,n.velocity,{strict:true,alignAttack:true,...(n.releaseSeconds===undefined?{}:{release:n.releaseSeconds})});
+     const preset=n.role==='bass'?bassInstrument:harmonyInstrument;
+     const voice=n.melody?this.tone(n,when,end-when):preset!=='piano'?playMelodyTone(this.context,this.piano.master,this.voices,n,when,end-when,preset):this.piano.note(n.pitch,when,end-when,n.velocity,{strict:true,alignAttack:true,...(n.releaseSeconds===undefined?{}:{release:n.releaseSeconds})});
      this.scheduled.set(key,{voice,when,end,cycle:c,pickup:!!n.pickupRepeat});
     }
    }

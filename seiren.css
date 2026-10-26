@@ -238,3 +238,13 @@ body.seiren .bar.pickup-bar{flex-basis:calc(25% * var(--pickup-ratio));min-width
 body.seiren .pickup-nc{display:block;font-size:13px;color:#6d725e;margin:12px 0;white-space:nowrap}
 body.seiren .pickup-bar .bar-cue{font-size:9px!important;white-space:nowrap}
 @media(max-width:600px){body.seiren .bar.pickup-bar{flex-basis:calc(45% * var(--pickup-ratio))}}
+/* Audio analysis controls remain beside the source and editing tools. */
+body.seiren .audio-overlays{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:8px 0 10px;font-size:11px;color:#735536}
+body.seiren .audio-overlays label{display:flex;align-items:center;gap:6px;flex-direction:row}
+body.seiren .audio-overlays input{width:auto}
+body.seiren .tempo-candidates{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+body.seiren #ml-rhythm{padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:12px 0}
+body.seiren #ml-rhythm>label{display:flex;flex-direction:row;align-items:center;gap:8px;text-align:left}
+body.seiren #ml-tap-status{font-size:11px;margin-left:8px;color:var(--muted)}
+body.seiren .seiren-inspector .performance-controls{display:grid;grid-template-columns:1fr;gap:12px}
+body.seiren .seiren-inspector .performance-controls label{min-width:0}

@@ -1,8 +1,8 @@
-import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=seiren-2';
-import { parse } from './music.js?v=seiren-2';
-import { styles as legacyStyles } from './style-engine.js?v=seiren-2';
-import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=seiren-2';
-import { performance, voicePlan } from './performance.js?v=seiren-2';
+import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=seiren-4';
+import { parse } from './music.js?v=seiren-4';
+import { styles as legacyStyles } from './style-engine.js?v=seiren-4';
+import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=seiren-4';
+import { performance, voicePlan } from './performance.js?v=seiren-4';
 
 export const barLength = meter => (meter?.numerator || 4) * 4 / (meter?.denominator || 4);
 export function normalizeChart(chart, beats = 4) {

@@ -184,7 +184,7 @@ function trackChunk(name, events) {
   }
   data.push(0, 0xff, 0x2f, 0); return chunk('MTrk', data);
 }
-export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [], pickupBeats = 0, pickupMode = 'padded' }) {
+export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [], pickupBeats = 0, pickupMode = 'padded', programs = {} }) {
   const ppq = 960, layout = pickupExportLayout(pickupBeats, meter, pickupMode), shift = layout.shift;
   for (const n of [...melody, ...accompaniment]) if (n.start < -pickupBeats - 1e-7) throw Error('Note precedes BAR 0.');
   melody = shiftNotes(melody, shift); accompaniment = shiftNotes(accompaniment, shift);
@@ -202,7 +202,8 @@ export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat
   }
   for(const c of chordMarkers){const data=[...utf8.encode(c.symbol)];tempos.push({tick:Math.round(c.start*ppq),order:2,bytes:[0xff,6,...vlqBytes(data.length),...data]});}
   const makeNotes = (notes, channel, name) => {
-    const events = [];
+    const program=programs[channel===0?'melody':channel===2?'bass':'harmony']??0;if(!Number.isInteger(program)||program<0||program>127)throw Error('Invalid MIDI program.');
+    const events = [{tick:0,order:1,bytes:[0xc0+channel,program]}];
     for (const note of notes) {
       if (!Number.isInteger(note.pitch) || note.pitch < 0 || note.pitch > 127 || !Number.isFinite(note.start) || !Number.isFinite(note.end) || note.start < 0 || note.end <= note.start) throw Error('不能匯出無效音符。');
       const start = Math.round(note.start * ppq), end = Math.max(start + 1, Math.round(note.end * ppq));

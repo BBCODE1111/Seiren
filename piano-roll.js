@@ -1,6 +1,7 @@
-import {pitchName} from './music.js?v=seiren-2';
-import { transformNote, createNote, transformSelection, notesInBox, quantizeNotes } from './note-edit.js?v=seiren-2';
-import { noteName } from './analysis.js?v=seiren-2';
+import {contourSegments} from './pitch-view.js';
+import {pitchName} from './music.js?v=seiren-4';
+import { transformNote, createNote, transformSelection, notesInBox, quantizeNotes } from './note-edit.js?v=seiren-4';
+import { noteName } from './analysis.js?v=seiren-4';
 const ns = 'http://www.w3.org/2000/svg';
 const rounded = value => Number(value.toFixed(3));
 const element = (tag, attrs, text) => { const el = document.createElementNS(ns, tag); for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value); if (text !== undefined) el.textContent = text; return el; };
@@ -72,11 +73,14 @@ export class PianoRoll {
     const harmony = element('g', { class: 'roll-harmony', 'pointer-events': 'none', 'aria-hidden': 'true' });
     for (const n of this.showAccompaniment===false?[]:accompaniment.filter(n=>n.pitch>=this.low&&n.pitch<=this.high)) harmony.append(element('rect', { x: this.x(n.start), y: this.y(n.pitch) + 4, width: Math.max(2, (n.end - n.start) * this.px), height: 4, rx: 1, fill: '#c1a775', opacity: .35 }));
     this.svg.append(harmony);
+    if(this.showBeats!==false){const detected=element('g', {class:'roll-detected-beats','pointer-events':'none','aria-label':'Detected audio beats'});for(const beat of this.beatMarkers||[])if(beat>=this.minBeat&&beat<=end)detected.append(element('line',{x1:this.x(beat),x2:this.x(beat),y1:this.top,y2:height,stroke:'#95733c','stroke-width':1,'stroke-dasharray':'3 5',opacity:.55}));this.svg.append(detected);}
+
     notes.forEach((note, index) => {
       const group = element('g', { class: 'roll-note', 'data-note': index, role: 'button', tabindex: index === this.selected ? 0 : -1, 'aria-label': `旋律音符 ${index + 1} ${noteName(note.pitch)}，起始 ${rounded(note.start)} 拍，長度 ${rounded(note.end - note.start)} 拍` });
       group.append(element('rect', { class: 'note-body', width: 10, height: this.row - 2, rx: 2 }), element('text', { class: 'note-label', x: 8, y: this.row - 5, 'font-size': 9, 'pointer-events': 'none' }), element('rect', { 'data-edge': 'start', x: 0, width: 5, height: this.row - 2, fill: 'transparent' }), element('rect', { 'data-edge': 'end', x: 0, width: 6, height: this.row - 2, fill: 'transparent' }));
       group.addEventListener('focus', () => {if(!this.selection.has(index))this.select(index);}); this.noteBox(group, note); this.svg.append(group);
     });
+    if(this.showPitch!==false){const contour=element('g',{class:'roll-pitch-curve','pointer-events':'none','aria-label':'Original audio F0 pitch contour'});for(const points of contourSegments(this.pitchCurve,{minBeat:this.minBeat,endBeat:end,minPitch:this.low,maxPitch:this.high}))contour.append(element('path',{d:points.map((p,i)=>(i?'L':'M')+this.x(p.beat).toFixed(2)+','+(this.y(p.midi)+this.row/2).toFixed(2)).join(' '),fill:'none',stroke:'#915a30','stroke-width':1.8,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.9}));this.svg.append(contour);}
     this.keys = element('g', { class: 'roll-keys', 'aria-hidden': 'true' });
     for (let pitch = this.low; pitch <= this.high; pitch++) { const black = [1,3,6,8,10].includes(pitch % 12); this.keys.append(element('rect', { x: 0, y: this.y(pitch), width: this.left - 1, height: this.row, fill: black ? '#0a1520' : '#d4dfe5', stroke: '#617484', 'stroke-width': .5 }), element('text', { x: 5, y: this.y(pitch) + this.row - 4, fill: black ? '#b2c8d6' : '#243b4d', 'font-size': 9 }, pitch%12===0?pitchName(pitch,this.keySignature,true):'')); }
     this.playhead=element('line',{class:'roll-playhead',x1:0,x2:0,y1:0,y2:height,stroke:'#f4d59b','stroke-width':2,'pointer-events':'none',visibility:'hidden'});this.svg.append(this.playhead);this.svg.append(this.keys);
