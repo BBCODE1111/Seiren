@@ -28,8 +28,8 @@ for(const groupName of ['現代流行與和聲','黑暗／重型與另類','跨�
 let statusTimer;const status=s=>{clearTimeout(statusTimer);$('status').textContent=s;statusTimer=setTimeout(()=>{$('status').textContent='';},2500);};
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 names.forEach((n,i)=>$('key').add(new Option(n,i)));
-try{const old=JSON.parse(localStorage.getItem('khimaira-v2-fusion')||'null');if(old&&old.bars?.length<=128){bars=normalizeChart(old.bars.map(b=>({...b,chords:chordList(b)})),4);source=normalizeChart(old.source||structuredClone(bars),4);for(const id of settings)if(old[id]!=null)$(id).value=old[id];const legacyArp={arpUp:'up',arpDown:'down',arpBounce:'upDown',arpRandom:'random',arpOctave:'up'};if(legacyArp[old.pattern]){$('pattern').value='arp';$('arpMode').value=legacyArp[old.pattern];$('arpRate').value=String(4/Number(old.rate||.5));$('arpOctaves').value=old.pattern==='arpOctave'?'2':'1';}if(!$('pattern').value)$('pattern').value='ballad';}}catch{}
-function save(){try{if(melodyLab)localStorage.setItem('khimaira-v2-project',JSON.stringify(projectSnapshot()));localStorage.setItem('khimaira-v2-fusion',JSON.stringify({bars,source,...Object.fromEntries(settings.map(id=>[id,$(id).value]))}));}catch{status('無法儲存於瀏覽器。');}}
+try{const old=JSON.parse((localStorage.getItem('seiren-fusion')??localStorage.getItem('khimaira-v2-fusion'))||'null');if(old&&old.bars?.length<=128){bars=normalizeChart(old.bars.map(b=>({...b,chords:chordList(b)})),4);source=normalizeChart(old.source||structuredClone(bars),4);for(const id of settings)if(old[id]!=null)$(id).value=old[id];const legacyArp={arpUp:'up',arpDown:'down',arpBounce:'upDown',arpRandom:'random',arpOctave:'up'};if(legacyArp[old.pattern]){$('pattern').value='arp';$('arpMode').value=legacyArp[old.pattern];$('arpRate').value=String(4/Number(old.rate||.5));$('arpOctaves').value=old.pattern==='arpOctave'?'2':'1';}if(!$('pattern').value)$('pattern').value='ballad';}}catch{}
+function save(){try{if(melodyLab)localStorage.setItem('seiren-project',JSON.stringify(projectSnapshot()));localStorage.setItem('seiren-fusion',JSON.stringify({bars,source,...Object.fromEntries(settings.map(id=>[id,$(id).value]))}));}catch{status('無法儲存於瀏覽器。');}}
 function checkpoint(){history.push(structuredClone(bars));if(history.length>30)history.shift();}
 function invalidateMelody(){arrangement=[];$('melodyGrid').replaceChildren();$('melodyNote').textContent='和弦已更新，按 Generate 產生這組進行的頂聲部按法。';}
 function selectedSymbol(){return chordList(bars[selected]||{})[selectedChord]?.symbol||'';}
@@ -240,7 +240,7 @@ $('chartExport').onclick=()=>downloadData(chartText(bars),'SEIREN-chords.txt','t
 $('compactChords').onclick=()=>document.querySelector('.score').classList.toggle('expanded');
 new IntersectionObserver(entries=>{document.querySelector('.score').classList.toggle('editor-visible',entries[0].isIntersecting);},{threshold:0}).observe($('ml-work'));
 document.addEventListener('keydown',e=>{if(e.key==='?'&&!e.target.closest('input,textarea,select')){e.preventDefault();$('ml-info').togglePopover();}});
-try{const saved=localStorage.getItem('khimaira-v2-project');if(saved)restoreProject(JSON.parse(saved));}catch(error){status('Saved project could not be restored: '+error.message);}
+try{const saved=(localStorage.getItem('seiren-project')??localStorage.getItem('khimaira-v2-project'));if(saved)restoreProject(JSON.parse(saved));}catch(error){status('Saved project could not be restored: '+error.message);}
 
 // Keep section guidance available without pushing the editor below long prose.
 for(const [i,section]of [...document.querySelectorAll('.quick-entry,.settings,.performance')].entries()){
