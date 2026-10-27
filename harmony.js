@@ -23,7 +23,10 @@ export function compatible(pitch, melodyPitch, policy='strict', chord=null) {
  if(policy!=='musical')return safeIntervals.has(interval);
  const pcs=typeof chord==='string'?parse(chord)?.pcs:chord?.pcs;
  if(interval===6)return !!pcs?.includes(mod(pitch))&&pcs.includes(mod(melodyPitch));
- if(interval===11)return pitch<=melodyPitch-13;
+ // interval 11 = accompaniment a semitone BELOW the melody pitch class (m2 / m9 / m9+8va): always harsh.
+ if(interval===11)return false;
+ // interval 1 = melody is the major 7th over a remote chord tone (e.g. B over a C an 11th+ below): consonant colour.
+ if(interval===1)return pitch<=melodyPitch-11;
  return musicalIntervals.has(interval);
 }
 export function chordCompatible(chord,note,policy='musical') {

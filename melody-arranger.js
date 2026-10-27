@@ -45,7 +45,9 @@ function colorCore(core,active,style,seed,policy,key,previous){
  else if(core.q==='')qualities=degree===7&&(jazz||['alberti','classical'].includes(pattern))?['7','13','9']:jazz?(pattern==='bossa'?['69','maj7','6']:pattern==='neosoul'?['maj9','maj7','69']:['maj7','69','maj9','6']):['pop','edm','jpop','chill'].includes(pattern)?['add9','6','']:[''];
  // Harmonic minor's raised leading tone supports a real dominant.
  if(key.mode==='minor'&&degree===7&&jazz)qualities=['7','7b9','9'];
- const choices=qualities.map(q=>parse(pitchName(core.root,key)+q)).filter(c=>policy==='musical'||active.every(n=>chordCompatible(c,n,policy)));
+ const anchors=active.filter(n=>n.end-n.start>=.45||Math.abs(n.start-Math.round(n.start))<.08);
+ const clean=c=>anchors.every(n=>!c.pcs.includes(mod(n.pitch-1)));
+ const choices=qualities.map(q=>parse(pitchName(core.root,key)+q)).filter(c=>c&&clean(c)&&(policy==='musical'||active.every(n=>chordCompatible(c,n,policy))));
  if(!choices.length)return core.symbol;
  const fresh=choices.filter(c=>c.symbol!==previous),usable=fresh.length?fresh:choices;
  let chosen=usable[Math.abs(seed)%usable.length].symbol;

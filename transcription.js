@@ -1,13 +1,46 @@
 import {estimateTempo,inferKeys} from './analysis.js?v=seiren-4';
+import {tempoScore} from './audio-features.js';
 // File labels are source metadata, never acoustic ground truth. Show their provenance.
 export function sourceHints(name){
  const text=name.replace(/\.[^.]+$/,'');
- const bpmMatch=text.match(/(?:^|[_\s-])(\d{2,3})(?:\s?bpm)?(?=[_\s-]|$)/i);
- const bpm=bpmMatch&&+bpmMatch[1]>=40&&+bpmMatch[1]<=240?+bpmMatch[1]:null;
- const keyMatch=text.match(/(?:^|[_\s-])([A-G])([#b]?)(maj(?:or)?|min(?:or)?|m)(?=[_\s-]|$)/i);
+ // Prefer a number written next to "bpm" (e.g. "..._29_128_Bpm_..."), then a bare 2–3 digit field.
+ const tagged=text.match(/(?:^|[_\s-])(\d{2,3})\s?[_-]?bpm(?=[_\s-]|$)/i)||text.match(/bpm\s?[_-]?(\d{2,3})(?=[_\s-]|$)/i);
+ const fields=[...text.matchAll(/(?:^|[_\s-])(\d{2,3})(?=[_\s-]|$)/g)].map(m=>+m[1]).filter(n=>n>=40&&n<=240);
+ const bpm=tagged&&+tagged[1]>=40&&+tagged[1]<=240?+tagged[1]:fields.length?fields[0]:null;
+ const keyMatch=text.match(/(?:^|[_\s-])([A-G])([#b]?)(maj(?:or)?|min(?:or)?|m)(?=[_\s-]|$)/i)||text.match(/key[_\s-]?([A-G])([#b]?)(maj(?:or)?|min(?:or)?|m)?(?=[_\s-]|$)/i);
  const roots={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
- const key=keyMatch?{root:(roots[keyMatch[1].toUpperCase()]+(keyMatch[2]==='#'?1:keyMatch[2]==='b'?-1:0)+12)%12,mode:/^maj/i.test(keyMatch[3])?'major':'minor'}:null;
+ const key=keyMatch?{root:(roots[keyMatch[1].toUpperCase()]+(keyMatch[2]==='#'?1:keyMatch[2]==='b'?-1:0)+12)%12,mode:keyMatch[3]?(/^maj/i.test(keyMatch[3])?'major':'minor'):null}:null;
  return {bpm,key};
+}
+// Tempo choice. Sample-library loops are cut on bar lines: their length equals 1/2/4/8/16/32
+// bars at an integer (or .5) BPM to within a millisecond. Only that exact evidence turns on
+// the loop prior; any other recording is judged on onset evidence plus a 70–150 BPM prior.
+export function loopTempos(duration){
+ const out=[];for(const bars of [1,2,4,8,16,32]){const raw=bars*240/duration;if(raw<55||raw>190)continue;const bpm=Math.round(raw*2)/2;if(Math.abs(duration-bars*240/bpm)<.001)out.push({bpm,bars});}
+ return out;
+}
+export function chooseTempo(candidates,duration,envelope=null){
+ const prior=bpm=>Math.exp(-((Math.log2(bpm/105))**2)/(2*.42**2));
+ const evidence=(bpm,fallback=0)=>envelope?Math.max(fallback,tempoScore(envelope,bpm)):fallback;
+ const loops=loopTempos(duration);
+ const pool=loops.length?loops.map(l=>({bpm:l.bpm,loop:1,bars:l.bars,score:evidence(l.bpm)})):
+  candidates.flatMap(c=>[1,2,.5].map(f=>({bpm:c.bpm*f,loop:0,score:evidence(c.bpm*f,c.score*(f===1?1:.85))}))).filter(c=>c.bpm>=55&&c.bpm<=190);
+ pool.forEach(c=>c.total=c.score+.25*prior(c.bpm));
+ pool.sort((a,b)=>b.total-a.total);return pool[0]||null;
+}
+// Bar 1 is not "the first note": test each beat phase and keep the one that puts long /
+// accented notes on beat 1 and 3. Notes before it become a pickup (BAR 0).
+export function chooseDownbeat(notes,bpm,{loop=0,beats=[]}={}){
+ if(loop>.6)return {downbeatTime:0,pickupBeats:0,reason:'loop'};
+ const beat=60/bpm,first=notes[0].start;
+ let anchor=first;if(beats.length){const near=beats.reduce((a,b)=>Math.abs(b-first)<Math.abs(a-first)?b:a,beats[0]);if(Math.abs(near-first)<beat*.3)anchor=near;}
+ let best=null;
+ for(let k=0;k<4;k++){const db=anchor+k*beat;let score=0;
+  for(const n of notes){const b=(n.start-db)/beat,len=(n.end-n.start)/beat,pos=((b%4)+4)%4;
+   const w=Math.min(2,len)+.3;if(Math.abs(pos-Math.round(pos))>.12)continue;const r=Math.round(pos)%4;score+=r===0?w*1.6:r===2?w*.8:w*.15;}
+  score-=k*.35; // small preference for no pickup
+  if(!best||score>best.score)best={downbeatTime:db,pickupBeats:Math.round(k*2)/2,score};}
+ return {...best,reason:'phase'};
 }
 // Decode one dominant melodic line, instead of treating vocal vibrato/harmonics as polyphony.
 // Small pitch changes need sustained evidence; silence is a competing path.
@@ -41,10 +74,13 @@ export function decodeMelody(frames,onsets=[],{frameTime=i=>i*256/22050,minFrame
 export function transcriptionResult(notes,duration,name,features=null){
  if(!notes.length)throw Error('未辨識出穩定旋律；請換乾聲或使用旋律 MIDI。');
  const hints=sourceHints(name),tempo=features?{bpm:features.bpm,candidates:features.candidates.map(c=>c.bpm),score:features.confidence,confidence:features.confidence>=.7?'起音較清楚；請確認半速／倍速':'節拍不明確，請比較候選或 TAP',method:'spectral-flux-dp'}:estimateTempo(notes.map(n=>n.start)),keys=inferKeys(notes);
- const bpm=hints.bpm||tempo.bpm,key=hints.key||keys.candidates[0];
- // Labelled loops retain leading rests. An unlabelled phrase still needs beat-one review.
- const offset=hints.bpm?0:notes[0].start;
- return {notes,tempo:{...tempo,bpm},key,offset,downbeatTime:offset,hints,coverage:notes.reduce((s,n)=>s+n.end-n.start,0)/duration,
+ const picked=!hints.bpm&&features?.candidates?.length?chooseTempo(features.candidates,duration,features.envelope):null;
+ const bpm=hints.bpm||picked?.bpm||tempo.bpm;
+ const key=hints.key?.mode?hints.key:hints.key?(keys.candidates.find(k=>k.root===hints.key.root)||{...hints.key,mode:'major'}):keys.candidates[0];
+ // Labelled loops retain leading rests. Unlabelled audio: loop-length and beat-phase evidence.
+ const db=hints.bpm?{downbeatTime:0,pickupBeats:0}:chooseDownbeat(notes,bpm,{loop:picked?.loop||0,beats:features?.beats||[]});
+ const offset=db.downbeatTime;
+ return {notes,tempo:{...tempo,bpm},key,offset,downbeatTime:offset,pickupBeats:db.pickupBeats||0,hints,coverage:notes.reduce((s,n)=>s+n.end-n.start,0)/duration,
   reviewRequired:!hints.bpm||!hints.key,
   warnings:[hints.bpm?'速度採檔名 BPM 標記，保留開頭休止。':'速度與第 1 拍尚未確認。先核對 BPM；若有弱起，請用 DOWNBEAT 點選 BAR 1 的強拍音。',hints.key?'調性採檔名標記；音高仍由音訊辨識，不強制貼齊音階。':'調性是候選，請比較相對大小調並確認。','辨識主旋律，非多軌分離。先比較原音與辨識音符；顫音、滑音及殘響仍可能需要修正。']};
 }

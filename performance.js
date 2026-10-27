@@ -62,7 +62,7 @@ ts.filter(t=>t<length).forEach((t,i)=>add(t,upper,Math.min(.28,length-t),i%3===0
 else if(pattern==='edm'||pattern==='disco'||pattern==='pop'){
 for(let t=0;t<length;t+=.5){add(t,[v[0]+(t%1?12:0)],.4,t%1?.56:.73);if(pattern==='edm'||t%1||t===0)add(t,upper,pattern==='pop'?.7:.38,t%1?.6:.72);}}
 else if(pattern==='blues'){
-for(let t=0;t<length;t+=1){add(t,[v[0]],.7,.68);add(t+.67,upper,.28,.61);}add(0,upper,.6,.74);}
+for(let t=0;t<length;t+=1){add(t,[v[0]],.7,.68);add(t+.5+swing,upper,.28,.61);}add(0,upper,.6,.74);}
 else if(pattern==='neoclassical'){
 add(0,[v[0]],length,.75,0,'held');const seq=[upper[0],upper.at(-1),upper[1]??upper[0],upper.at(-1)];for(let t=0,n=0;t<length;t+=.25,n++)add(t,[seq[n%4]],.35,n%4===0?.76:.54);}
 else if(['modalPluck','sparsePluck','pentatonicAnswer','breathingDrone','ragaDrone'].includes(pattern)){

@@ -33,6 +33,7 @@ body.seiren #melodyWorkspace{display:grid;grid-template-columns:minmax(0,1fr) 27
 .seiren-topbar,.seiren-stylebar,.seiren-notices,.seiren-transport{grid-column:1/-1}
 .seiren-topbar{display:flex;gap:10px;align-items:center;padding:12px 16px;background:#f4f2e7b8;border:1px solid var(--line);border-top:0;backdrop-filter:blur(2px);margin-bottom:-10px}
 .seiren-topbar .melody-upload{flex:1;min-width:0}
+.seiren-topbar:has(.demo-menu[open]){position:relative;z-index:4}
 body.seiren #generate{font-size:14px!important;min-width:200px;white-space:nowrap;min-height:46px}
 body.seiren .melody-upload #ml-settings-button{font-size:12px!important;margin-left:16px;min-width:200px}
 body.seiren #ml-remove{margin-left:auto}

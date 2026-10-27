@@ -16,6 +16,16 @@ export function onsetEnvelope(samples,sampleRate){
  const clean=raw.map((v,i)=>{const local=raw.slice(Math.max(0,i-10),i+11);return Math.max(0,v-local.reduce((a,b)=>a+b,0)/local.length*.7);});
  const peak=Math.max(1e-9,...clean);return {values:clean.map(v=>v/peak),hopSeconds:hop/sampleRate,duration:samples.length/sampleRate};
 }
+// Score one tempo against the onset envelope (same measure as tempoCandidates), so tempos
+// implied by the loop length can be compared with autocorrelation peaks on equal terms.
+export function tempoScore(envelope,bpm){
+ const {values:x,hopSeconds:hop}=envelope,n=x.length,lag=60/bpm/hop;if(!(lag>1)||lag>n/2)return 0;
+ const peaks=x.flatMap((v,i)=>v>.15&&v>=(x[i-1]||0)&&v>(x[i+1]||0)?[{i,v}]:[]);if(peaks.length<4)return 0;
+ let cross=0,a=0,b=0;for(let i=Math.ceil(lag);i<n;i++){const p=i-lag,j=Math.floor(p),v=x[j]*(1-p+j)+(x[j+1]||0)*(p-j);cross+=x[i]*v;a+=x[i]**2;b+=v*v;}
+ const correlation=cross/Math.sqrt(a*b||1),weight=peaks.reduce((s,p)=>s+p.v,0);let alignment=0;
+ for(const phase of peaks.slice(0,12)){const fit=peaks.reduce((s,p)=>{const position=(p.i-phase.i)/lag,error=Math.abs(position-Math.round(position));return s+p.v*Math.exp(-((error/.06)**2));},0)/weight;alignment=Math.max(alignment,fit);}
+ return clamp(correlation*.75+alignment*.25,0,1);
+}
 export function tempoCandidates(envelope){
  const {values:x,hopSeconds:hop}=envelope,n=x.length,peaks=x.flatMap((v,i)=>v>.15&&v>=(x[i-1]||0)&&v>(x[i+1]||0)?[{i,v}]:[]);
  if(peaks.length<4)return [];
