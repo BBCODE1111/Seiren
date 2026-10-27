@@ -1,7 +1,7 @@
 import {contourSegments} from './pitch-view.js';
-import {pitchName} from './music.js?v=seiren-4';
-import { transformNote, createNote, transformSelection, notesInBox, quantizeNotes } from './note-edit.js?v=seiren-4';
-import { noteName } from './analysis.js?v=seiren-4';
+import {pitchName} from './music.js?v=seiren-pop-1';
+import { transformNote, createNote, transformSelection, notesInBox, quantizeNotes } from './note-edit.js?v=seiren-pop-1';
+import { noteName } from './analysis.js?v=seiren-pop-1';
 const ns = 'http://www.w3.org/2000/svg';
 const rounded = value => Number(value.toFixed(3));
 const element = (tag, attrs, text) => { const el = document.createElementNS(ns, tag); for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value); if (text !== undefined) el.textContent = text; return el; };

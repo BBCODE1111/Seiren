@@ -1,8 +1,9 @@
-import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=seiren-4';
-import { parse } from './music.js?v=seiren-4';
-import { styles as legacyStyles } from './style-engine.js?v=seiren-4';
-import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=seiren-4';
-import { performance, voicePlan } from './performance.js?v=seiren-4';
+import {isPopPiano} from './pop-piano.js?v=seiren-pop-1';
+import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=seiren-pop-1';
+import { parse } from './music.js?v=seiren-pop-1';
+import { styles as legacyStyles } from './style-engine.js?v=seiren-pop-1';
+import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=seiren-pop-1';
+import { performance, voicePlan } from './performance.js?v=seiren-pop-1';
 
 export const barLength = meter => (meter?.numerator || 4) * 4 / (meter?.denominator || 4);
 export function normalizeChart(chart, beats = 4) {
@@ -56,7 +57,7 @@ export function rewriteWithMelody(candidate,melody,{meter,key,style='Jazz',seed=
 // The groove belongs to the bar, never to the number or length of harmony repairs.
 // Render a full-bar rhythm template and map its voice slots to the chord at each attack.
 export function pulsePerformance(chart, pattern, options={}) {
- if(['sustain','block','arp'].includes(pattern))return performance(chart,pattern,options);
+ if(isPopPiano(pattern)||['sustain','block','arp'].includes(pattern))return performance(chart,pattern,options);
  const beats=options.barBeats||4, actual=voicePlan(chart,options);
  const template=chart.map(bar=>({chords:[{symbol:bar.chords?.find(c=>parse(c.symbol))?.symbol||'C',beats}]}));
  const anchors=voicePlan(template,options),raw=performance(template,pattern,options);
@@ -84,10 +85,11 @@ export function preserveLocks(chart,previous,beats=4){
  });
 }
 export function renderProtected(chart, pattern, options={}, melody=[]) {
+ options={...options,melody};
  let raw=melody.length?pulsePerformance(chart,pattern,options):performance(chart,pattern,options);const policy=options.policy||'strict';
  const plan=voicePlan(chart,options);
  if(!melody.length)return {notes:raw,accompaniment:raw.map(n=>{const c=plan.find(c=>n.beat>=c.beat&&n.beat<c.beat+c.beats);return {pitch:n.note,start:n.beat,end:n.beat+n.duration,velocity:n.velocity,chord:c?.symbol,role:n.note===c?.notes[0]?'bass':'chords'};}),removed:0,adjusted:0,lowered:0};
- if(melody.length&&options.followMelody&&pattern!=='arp')raw=followMelodyRhythm(raw,plan,melody,{...options,pattern});
+ if(melody.length&&options.followMelody&&pattern!=='arp'&&!isPopPiano(pattern))raw=followMelodyRhythm(raw,plan,melody,{...options,pattern});
  const beats=options.barBeats||4,chartSpans=spans(chart,beats),notes=[];let removed=0,adjusted=0,lowered=0;
  for(const original of raw){
   const span=chartSpans.find(s=>original.beat>=s.start-1e-7&&original.beat<s.end-1e-7),chord=parse(span?.symbol||'');

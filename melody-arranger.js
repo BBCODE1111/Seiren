@@ -1,7 +1,8 @@
-import {parse,pitchName,spellChord} from './music.js?v=seiren-4';
-import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=seiren-4';
-import {mod} from './analysis.js?v=seiren-4';
-import {styles} from './style-engine.js?v=seiren-4';
+import {arrangeAsianPop} from './mandarin-harmony.js?v=seiren-pop-1';
+import {parse,pitchName,spellChord} from './music.js?v=seiren-pop-1';
+import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=seiren-pop-1';
+import {mod} from './analysis.js?v=seiren-pop-1';
+import {styles} from './style-engine.js?v=seiren-pop-1';
 
 export function phraseNotes(melody,start,end,tolerance=.08){
  return melody.filter(n=>overlaps(n,{start,end})&&!(n.start<start&&n.end<start+tolerance)&&!(n.end>end&&n.start>end-tolerance));
@@ -57,6 +58,7 @@ function colorCore(core,active,style,seed,policy,key,previous){
 }
 export function arrangeMelody(melody,{key={root:0,mode:'major'},style='basic',seed=0,beatsPerBar=4,policy='musical',previous=[],pickup=true,pickupBeats,meter}={}){
  validateMelody(melody);const totalBeats=Math.max(1,Math.ceil(Math.max(...melody.map(n=>n.end))/beatsPerBar))*beatsPerBar,segments=[];
+ if(['Mandopop','Japanese rock','K-pop'].includes(style)){const pop=arrangeAsianPop(melody,{key,style,seed,beatsPerBar,policy,previous,pickup,pickupBeats});if(pop)return pop;}
  let fallback;
  for(let start=0;start<totalBeats-1e-7;start+=beatsPerBar){
   const end=start+beatsPerBar;

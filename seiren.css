@@ -107,7 +107,7 @@ body.seiren #ml-work>details summary{min-height:26px;font-size:10px!important;co
 .seiren-legend span{display:flex;align-items:center;gap:7px}
 .seiren-legend span::before{content:'';width:9px;height:9px;border-radius:50%;background:#668a7e}
 .seiren-legend .legend-accompaniment::before{background:#a09c82}
-body.seiren .seiren-inspector{display:block;padding:20px 18px;grid-column:2;grid-row:4;align-self:stretch}
+body.seiren .seiren-inspector{display:block;padding:20px 18px;grid-column:2;grid-row:5;align-self:stretch}
 .seiren-inspector h2{font:500 13px SeirenDisplay,Georgia,serif;letter-spacing:.08em;padding:0 0 16px;border-bottom:1px solid var(--line);margin:0 0 16px}
 body.seiren .seiren-inspector .performance-controls{display:flex;flex-direction:column;gap:12px;align-items:stretch}
 body.seiren .seiren-inspector .performance-controls label:first-child{min-width:0}
@@ -249,3 +249,8 @@ body.seiren #ml-rhythm>label{display:flex;flex-direction:row;align-items:center;
 body.seiren #ml-tap-status{font-size:11px;margin-left:8px;color:var(--muted)}
 body.seiren .seiren-inspector .performance-controls{display:grid;grid-template-columns:1fr;gap:12px}
 body.seiren .seiren-inspector .performance-controls label{min-width:0}
+
+/* Keep the example library beside the featured style, on every screen. */
+.seiren-ideas{grid-column:1/-1;display:flex;align-items:end;gap:8px;padding:10px 16px;background:#f4f2e7b8;border:1px solid var(--line);min-width:0}
+.seiren-ideas label{flex:1;min-width:0}.seiren-ideas select{width:100%;min-width:0}.seiren-ideas button{white-space:nowrap}.seiren-pattern-help{font-size:11px;line-height:1.5}
+@media(max-width:600px){.seiren-ideas{flex-wrap:wrap;padding:10px}.seiren-ideas label{flex-basis:100%}.seiren-ideas button{flex:1}}

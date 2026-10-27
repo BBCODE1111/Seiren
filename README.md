@@ -4,6 +4,12 @@
 
 [開啟網站](https://bbcode1111.github.io/Seiren/) · [使用說明](https://bbcode1111.github.io/Seiren/guide.html) · [軟體介紹與授權](https://bbcode1111.github.io/Seiren/research.html)
 
+## Mandarin pop 鋼琴伴奏
+
+Mandarin pop 現在位於樂風最前方，提供 36 組原創練習：1645、卡農下降低音、4536251 與小調。樂風下方的 HARMONY IDEAS 可直接載入或切換；GENERATE 會依旋律比較和聲句型並調整衝突。
+
+PATTERN 的 POP 01–12 包含全小節、二分、四分柱式、左右手交替及輕切分。09–12 可在 PIANO FILLS 選 OFF、AUTO（句尾）或 LIGHT（每兩小節）；旋律繁忙時會減少裝飾。播放和 MIDI 匯出共用保護後的音符。完整規則與來源見 [seirenmelody.md](seirenmelody.md)。
+
 ## 主要功能
 
 - 音訊辨識、MIDI 匯入、手繪旋律與鋼琴捲軸編輯。

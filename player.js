@@ -1,6 +1,6 @@
-import {playMelodyTone} from './melody-synth.js?v=seiren-4';
-import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-4';
-import {Piano} from './piano.js?v=seiren-4';
+import {playMelodyTone} from './melody-synth.js?v=seiren-pop-1';
+import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-pop-1';
+import {Piano} from './piano.js?v=seiren-pop-1';
 import {pickupTail,validatePickup} from './timeline.js';
 
 // First pass may contain BAR 0. Every following pass has its own BAR 1 origin.

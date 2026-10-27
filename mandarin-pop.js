@@ -1,0 +1,42 @@
+// Original studies built from common functional vocabulary, not transcriptions of songs.
+const study=(id,family,title,bars,level=0,mode='major')=>({id:'mandarin-'+id,family,title,bars:bars.split('|'),level,mode});
+export const mandarinStudies=[
+ study('1645-clear','1645','1645 · 清楚的告白','C|Am|F|G|C|Am7|Dm7|Gsus4 G'),
+ study('1645-open','1645','1645 · 留白與 sus','Csus2|Am7|Fadd9|Gsus4|Cadd9|Am|F6|G'),
+ study('1645-warm','1645','1645 · 六度暖色','C6|Am7|F6|G7sus4|Cadd9|Am7|Dm7|G7'),
+ study('1645-step','1645','1645 · 低音接力','C G/B|Am|F C/E|Dm7 G|C/E|Am7|Fadd9|Gsus4 G',1),
+ study('1645-secondary','1645','1645 · 通往六級','C|E7/G#|Am7|C/G|F|C/E|Dm7|Gsus4 G',1),
+ study('1645-borrow','1645','1645 · 副歌後的苦甜','Cadd9|Am7|F|Fm6|C/E|Am|Dm7|G7',1),
+ study('1645-sus','1645','1645 · 延留再落地','Cadd9|Am7|Fsus2|Gsus4 G|C6|Am7|Fadd9|G'),
+ study('1645-iv','1645','1645 · 四級的引力','C6|Am7|Gm7 C7|Fadd9|C/E|Am7|Dm7|G7',2),
+ study('1645-ii','1645','1645 · 回家的準備','Cadd9|Am|Dm7|G7|C/E|A7|Dm7|Gsus4 G',1),
+ study('1645-light','1645','1645 · 輕快重述','C|Am7|F C/E|Gsus4|C6|Am7|Dm7 G7|C'),
+ study('canon-clear','canon','下降低音 · 主歌敘事','C|G/B|Am|Em/G|F|C/E|Dm7|G'),
+ study('canon-open','canon','下降低音 · 開放聲部','Cadd9|G/B|Am7|C/G|Fadd9|C/E|Dm7|Gsus4'),
+ study('canon-warm','canon','下降低音 · 柔和六度','C6|G/B|Am7|C/G|F6|C/E|Dm7|G7'),
+ study('canon-sus','canon','下降低音 · 延留呼吸','Csus2|G/B|Am7|C/G|Fsus2|C/E|Dm7|Gsus4 G'),
+ study('canon-vi','canon','下降低音 · 六級前的牽引','C|E7/G#|Am|C/G|F|C/E|Dm7|G7',1),
+ study('canon-iv','canon','下降低音 · 借用小四級','Cadd9|G/B|Am|C/G|F Fm6|C/E|Dm7|G',1),
+ study('canon-tofour','canon','下降低音 · 四級前的二五','C6|G/B|Am7|Gm7 C7|F|C/E|Dm7|G7',2),
+ study('canon-diminished','canon','下降低音 · 半音接近','C|G/B|Am7|C/G|F|C/E Ebdim7|Dm7|G7',2),
+ study('canon-rise','canon','下降低音 · 結尾抬升','Cadd9|G/B|Am|Em/G|Fadd9|C/E|D7/F#|Gsus4 G',1),
+ study('canon-return','canon','下降低音 · 收束','C|G/B|Am7|Em/G|F|Dm7 G7|C6|C'),
+ study('circle-clear','4536251','4536251 · 副歌起點','F|G|Em|Am|Dm7|G7|C|C'),
+ study('circle-open','4536251','4536251 · 和聲留白','Fadd9|Gsus4|Em7|Am7|Dm7|G7sus4|Cadd9|C6'),
+ study('circle-bass','4536251','4536251 · 連續低音','F|G/F|Em7|Am7|Dm7|G7|C/E|C',1),
+ study('circle-vi','4536251','4536251 · 推向六級','Fadd9|G|Em7 E7|Am|Dm7|Gsus4 G|C6|C',1),
+ study('circle-ii','4536251','4536251 · 推向二級','F6|G|Em7|A7|Dm7|G7|Cadd9|C',1),
+ study('circle-borrow','4536251','4536251 · 小四級轉身','Fadd9|Fm6|Em7|Am|Dm7|G7|C6|C',1),
+ study('circle-sus','4536251','4536251 · 屬和弦延留','F|Gsus4 G|Em7|Am7|Dm7|G7sus4 G7|Cadd9|C'),
+ study('circle-chain','4536251','4536251 · 屬功能接力','F6|B7|Em7|A7|Dm7|G7|C6|G7',2),
+ study('circle-bridge','4536251','4536251 · 回到新段落','Fadd9|G/F|Em7|Am7|Dm7|G7|C|Gm7 C7',2),
+ study('circle-end','4536251','4536251 · 安靜尾聲','F6|G|Em7|Am7|Dm7|Gsus4 G|Cadd9|C6'),
+ study('minor-story','minor','小調 · 敘事','Cm|G/B|Ab|Eb/G|Fm|Cm/Eb|Dm7b5|G7',1,'minor'),
+ study('minor-open','minor','小調 · 空氣感','Cmadd9|Abadd9|Eb|Bbsus4|Fm7|Cm/Eb|Ab|G7',1,'minor'),
+ study('minor-return','minor','小調 · 回望','Cm|Bb|Ab|G7|Fm|Cm/Eb|Dm7b5 G7|Cm',1,'minor'),
+ study('minor-lift','minor','小調 · 副歌抬升','Ab|Bb|Gm|Cm|Fm7|G7|Cm|Cm',1,'minor'),
+ study('minor-six','minor','小調 · 六度色彩','Cm6|Fm6|Ab|G7|Cm|Fm7|G7sus4 G7|Cm',2,'minor'),
+ study('minor-pedal','minor','小調 · 持續低音','Cm|Ab/C|Fm/C|G7|Cm/Eb|Fm|G7|Cm',1,'minor')
+];
+export const mandarinStyle={description:'Mandarin pop · 1645、卡農下降低音、4536251；柱式支撐主唱，句尾少量回應，借用與次屬依旋律選擇。',pattern:'popHalf',voicing:'close',tempo:88,phrases:mandarinStudies.map(s=>s.bars),phraseModes:mandarinStudies.map(s=>s.mode)};
+export const asianPopStudies=style=>style==='Mandopop'?mandarinStudies:style==='Japanese rock'?mandarinStudies.filter(s=>s.family==='4536251'||s.id==='mandarin-canon-rise'):style==='K-pop'?mandarinStudies.filter(s=>['mandarin-circle-open','mandarin-circle-ii','mandarin-circle-borrow','mandarin-1645-iv','mandarin-canon-tofour'].includes(s.id)):[];

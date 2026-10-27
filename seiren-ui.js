@@ -11,12 +11,13 @@ export function mountSeirenUI(lab) {
   };
   const top = make('div', 'seiren-topbar');
   const styles = make('div', 'seiren-stylebar');
+  const ideas = make('div', 'seiren-ideas');
   const editor = make('div', 'seiren-editor');
   const inspector = make('aside', 'seiren-inspector');
   inspector.setAttribute('aria-label', 'Accompaniment settings');
   const notices = make('div', 'seiren-notices');
   // Keep destination containers connected before moving ID-addressed controls.
-  host.prepend(top, styles, notices, editor, inspector);
+  host.prepend(top, styles, ideas, notices, editor, inspector);
   const score = document.querySelector('.score');
   const transport = score.querySelector('.transport');
   const work = $('ml-work');
@@ -34,6 +35,14 @@ export function mountSeirenUI(lab) {
   const styleLabel = $('style').closest('label');
   styles.append(compare, styleLabel);
   styleLabel.firstChild.textContent = 'ALL STYLES';
+  const exampleLabel = $('library').closest('label');
+  exampleLabel.firstChild.textContent = 'HARMONY IDEAS';
+  $('loadPreset').textContent = 'Load idea';
+  $('nextSong').textContent = 'Next idea';
+  ideas.append(exampleLabel, $('loadPreset'), $('nextSong'));
+  $('library').setAttribute('aria-label', 'Harmony ideas');
+  const patternHelp = make('p', 'hint seiren-pattern-help', 'POP 01–08: steady support. POP 09–12: small phrase-end fills; busy melodies leave less room.');
+  $('popFill').closest('label').after(patternHelp);
   const syncStyles = () => {
     for (const button of compare.querySelectorAll('button')) {
       button.setAttribute('aria-pressed', String(button.dataset.compareStyle === $('style').value));
@@ -80,7 +89,7 @@ export function mountSeirenUI(lab) {
   }
   empty.append(emptyActions);
   editor.append(empty);
-  host.prepend(top, styles, notices, editor, inspector);
+  host.prepend(top, styles, ideas, notices, editor, inspector);
   host.append(transport);
   transport.classList.add('seiren-transport');
   // Keep these controls visible and directly usable in permanent panels.

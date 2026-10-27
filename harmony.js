@@ -1,6 +1,6 @@
-import { parse } from './music.js?v=seiren-4';
-import { performance } from './performance.js?v=seiren-4';
-import { mod, noteNames } from './analysis.js?v=seiren-4';
+import { parse } from './music.js?v=seiren-pop-1';
+import { performance } from './performance.js?v=seiren-pop-1';
+import { mod, noteNames } from './analysis.js?v=seiren-pop-1';
 
 export const styles = {
   basic: { label: '基本和弦', pattern: 'sustain', qualities: ['', 'm', 'sus2', 'sus4'], voicing: 'close', description: '先建立清楚的三和弦與穩定長音。' },

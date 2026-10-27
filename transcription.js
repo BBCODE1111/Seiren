@@ -1,4 +1,4 @@
-import {estimateTempo,inferKeys} from './analysis.js?v=seiren-4';
+import {estimateTempo,inferKeys} from './analysis.js?v=seiren-pop-1';
 import {tempoScore} from './audio-features.js';
 // File labels are source metadata, never acoustic ground truth. Show their provenance.
 export function sourceHints(name){

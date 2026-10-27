@@ -1,10 +1,12 @@
-import {darkStyles} from './dark-styles.js?v=seiren-4';
-import {names,mod,parse} from './music.js?v=seiren-4';
-import {parseBar,chordList,parseChart} from './solutions.js?v=seiren-4';
-import {songs} from './song-pool.js?v=seiren-4';
-import {worldStyles} from './world-styles.js?v=seiren-4';
-import {worldMutation} from './world-generator.js?v=seiren-4';
+import {mandarinStyle,mandarinStudies,asianPopStudies} from './mandarin-pop.js?v=seiren-pop-1';
+import {darkStyles} from './dark-styles.js?v=seiren-pop-1';
+import {names,mod,parse} from './music.js?v=seiren-pop-1';
+import {parseBar,chordList,parseChart} from './solutions.js?v=seiren-pop-1';
+import {songs} from './song-pool.js?v=seiren-pop-1';
+import {worldStyles} from './world-styles.js?v=seiren-pop-1';
+import {worldMutation} from './world-generator.js?v=seiren-pop-1';
 export const styles={
+Mandopop:mandarinStyle,
 Jazz:{description:'功能替代、次屬和弦、ii–V、三全音／backdoor，讓 3rd 與 7th 連接。',pattern:'jazz',voicing:'rootless',phrases:[['Cmaj9 Ebdim7','Dm9 G13','Em7 A7b9','Dm9 Db7#11'],['Em9 A7alt','Dm9 G13','Fm9 Bb13','C69 G7alt'],['C69','F#m7b5 B7b9','Em9 A7alt','Dm9 G13']],T:['Cmaj9','Em9 A7alt','C69 Ebdim7'],R:['Am9','Em7 A7alt','Dm9 G13'],S:['Fmaj9','Fm9 Bb13','Dm9 G13'],D:['G13','Dm9 Db7#11','G7sus4 G7alt']},
 Gospel:{description:'斜線低音、減七經過和弦、IV–iv、sus 解決與 plagal 色彩。',pattern:'gospel',voicing:'open',phrases:[['C69 E7/G#','Am9 C7/G','Fmaj9 Fm6','C/G G7sus4'],['Cmaj9/E','Fmaj9 F#dim7','C/G A7b9','Dm9 G13'],['C69','Bb/C C7','Fmaj9 Fm6','C/G G7']],T:['C69/E','Cmaj9 E7/G#','C/G'],R:['Am9 C7/G','C7/G','Em7 A7b9'],S:['Fmaj9 Fm6','Fmaj9 F#dim7','Dm9/G'],D:['G7sus4 G13','C/G G7','Db9 C69']},
 Fusion:{description:'Lydian #11、調式平移、非功能根音關係與旋律小調色彩。',pattern:'fusion',voicing:'open',phrases:[['Cmaj9#11','Ebmaj9#11','Dm11','Db7#11'],['Cmaj7#11','Abmaj9','Bb/C','Dmaj7#11'],['CmMaj9','F13','Dbmaj9#11','G7alt']],T:['Cmaj9#11','D/C','Ebmaj9#11'],R:['Am11','Abmaj9#11','AmMaj9'],S:['Fmaj7#11','Gbmaj9#11','Dm11'],D:['G7#11','Db7#11','Bb/C']},
@@ -27,7 +29,6 @@ Object.assign(styles,{
 'Chill':preset('慢速 add9/6/9、共同音延留與稀疏旋律；給聲部空間自然呼吸。','chill','open',[['Fmaj9','Cmaj9/E','Dm9','C69'],['Am9','Fmaj9','Cmaj9','G6'],['Cmaj9','D/C','Fmaj9/C','Cmaj9']]),
 'Neo-soul':preset('半音接近、m11/maj9、backdoor 與平滑內聲部；不急著回到 I。','neosoul','rootless',[['Fm9','Bb13','Cmaj9','A7alt'],['Dm11','Db7#11','Cmaj9','B7alt'],['Fmaj9','Em9 A7alt','Dm11','G13']]),
 'American pop':preset('I–V–vi–IV / vi–IV–I–V，加入 sus、轉位與偶爾 iv 借用。','pop','open',[['C','G/B','Am','Fadd9'],['Am','F','C','G'],['F','C','Dm7','G'],['C','Em','F','Fm']]),
-'Mandopop':preset('級進低音、IV–iv、平行大小調與副歌前的次屬和弦。','ballad','open',[['Fmaj7','G','Em7 E7','Am7'],['C','G/B','Am C/G','F Fm'],['Dm7','G','Cmaj7','A7']]),
 'K-pop':preset('R&B 的七九和弦、轉位與大小調借用，搭配切分的 pop groove。','rnb','open',[['Fmaj9','G13','Em7','Am9'],['Cmaj9/E','Fm9','Dm9','G13'],['Am9','D9','Gmaj9','Cmaj9']]),
 'Major blues':preset('12 小節大調藍調：I7–IV7–V7、quick change 與 ii–V turnaround。選 12 bars 可聽完整曲式。','blues','close',[['C7','F7','C7','C7','F7','F7','C7','A7','Dm7','G7','C7 A7','Dm7 G7'],['C9','F9','C9','Gm7 C7','F9','F#dim7','C/G','A7b9','Dm9','G13','C9 A7','Dm9 G13'],['C7','F7','C7','C7','F7','Fm6','C/G','A7','Dm7','G7','C7','G7']]),
 'Minor blues':preset('12 小節小調藍調：i–iv、♭VI–V 或 iiø–V–i；小調 ii–V 的解決。','blues','close',[['Cm7','Cm7','Cm7','Cm7','Fm7','Fm7','Cm7','Cm7','Ab7','G7b9','Cm6','Dm7b5 G7b9'],['Cm9','Fm9','Cm9','Cm9','Fm9','Fm9','Cm9','A7alt','Dm7b5','G7b9','Cm6','G7b9'],['Cm6','Cm6','Cm6','C7b9','Fm6','Fm6','Cm/G','Ab7','Dm7b5','G7b9','Cm6','Dm7b5 G7b9']]),
@@ -36,8 +37,9 @@ Object.assign(styles,{
 'Ambient':preset('長音、開放配置、共同音與緩慢調式變化。','ambient','open',[['Cmaj9','Fmaj9/C','D/C','Cmaj9'],['Am11','Fmaj9','Cmaj9','Gsus2'],['Fmaj9','G6','Am9','Cmaj9']])
 });
 styles.House=preset('Deep / Soulful House · 共同音九和弦、跨拍延留、稀疏切分與獨立低音。建議 114–124 BPM。','house','rootless',[['Am9','D9','Gmaj9','Cmaj9'],['Cm9','Fm9','Abmaj9','Gm9'],['Dm9','G13','Cmaj9','Fmaj9'],['Fm9','Abmaj9','Cm9','Bb13']]);
+for(const name of ['Japanese rock','K-pop']){const cfg=styles[name];cfg.phrases.push(...asianPopStudies(name).map(s=>s.bars));}
 Object.assign(styles,darkStyles,worldStyles);
-export const styleLabels={...Object.fromEntries(Object.entries(darkStyles).map(([k,v])=>[k,v.label])),...Object.fromEntries(Object.entries(worldStyles).map(([k,v])=>[k,v.label])),'Neoclassical rock':'古典戲劇搖滾 · Neoclassical rock',House:'Deep / Soulful House','Major blues':'Major blues · 大調藍調','Minor blues':'Minor blues · 小調藍調'};
+export const styleLabels={Mandopop:'Mandarin pop · 華語流行','Japanese rock':'J-pop / Japanese rock',...Object.fromEntries(Object.entries(darkStyles).map(([k,v])=>[k,v.label])),...Object.fromEntries(Object.entries(worldStyles).map(([k,v])=>[k,v.label])),'Neoclassical rock':'古典戲劇搖滾 · Neoclassical rock',House:'Deep / Soulful House','Major blues':'Major blues · 大調藍調','Minor blues':'Minor blues · 小調藍調'};
 export function seeded(seed){let n=(seed+971)>>>0;return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
 function tint(symbol,style,level,random,key=0,mode='major'){const c=parse(symbol);if(!c)return symbol;
 if(styles[style]?.dark){
@@ -52,6 +54,12 @@ export function cadenceTo(target,{tritone=false,rich=false}={}){const c=parse(ta
 export function mutate(source,{style='Jazz',key=0,mode='major',freedom='free',density=2,seed=0,randomness='medium',method='style',loop=true}={}){
 if(method==='original')return structuredClone(source);
 const cfg=styles[style]||styles.Jazz,random=seeded(seed),count=source.length||4,filled=source.some(b=>chordList(b).length),level=randomness;
+if(style==='Mandopop'&&method==='style'&&(freedom==='free'||!filled)){
+ const maxLevel=level==='low'?0:level==='high'?2:1;
+ const pool=mandarinStudies.filter(s=>s.mode===mode&&s.level<=Math.max(mode==='minor'?1:0,maxLevel));
+ const study=pool[((seed%pool.length)+pool.length)%pool.length];
+ return Array.from({length:count},(_,i)=>{let chords=parseBar(study.bars[i%study.bars.length]).map(c=>({...c,symbol:transpose(c.symbol,key)}));if(density===1)chords=[{...chords[0],beats:4}];return {chords,reason:study.title};});
+}
 const songCandidates=songs.filter(s=>s.style===style&&s.mode===mode);const phrases=[...cfg.phrases,...(cfg.dark?cfg.contrasts.map(([,chart])=>chart.split('|')):[]),...songCandidates.map(s=>parseChart(s.chart).map(b=>b.chords.map(c=>c.symbol).join(' ')))];const phrase=phrases[((seed%phrases.length)+phrases.length)%phrases.length];
 const replace=method==='style'&&freedom==='free'&&(level==='high'||level==='medium'&&seed%2===0);
 let result=cfg.world?worldMutation(source,cfg,{key,seed,randomness,freedom,density,method}):Array.from({length:count},(_,i)=>{const input=chordList(source[i]||{});let cs;
