@@ -1,0 +1,159 @@
+[
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/1b581bcb6hc64218ff400cb6471f5d62.pdf",
+    "hash": "405e893fa2734a677b0577ad49bfc27c50fd06a8a10e5df5309e9e3d3b18648a",
+    "bytes": 5217705,
+    "pages": 7,
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/2126bb43akc1aaab8f10b75d9af43f54.mp4",
+    "hash": "b09cdd80d3affefa03d8b6f3db3fb63915be7071efa3f2a3d2ddcf52ea1d031a",
+    "bytes": 599317208,
+    "study_status": "full-timeline sampled captions and board text; no audio transcription"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/27196d14csef0b2a6f52b1389e319d03.pdf",
+    "hash": "f1014522c701f2957bcbd70c3c95ec0a623a67149d161e3b0b73a655037babf2",
+    "bytes": 6743218,
+    "pages": 6,
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/3bc80dc69q05b2227637d1c0d73c18d9.pdf",
+    "hash": "28852b75ded7b2b6d7906ef8de76ee424ae7ab8ec2de12936cadecde6dad40c9",
+    "bytes": 6997265,
+    "pages": 9,
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/55b5de581s94c62c495167f02dbbf368.pdf",
+    "hash": "21a8d23dd712b91184bdc5092832fa3a47c406b72153338c24df087498128d67",
+    "bytes": 6993269,
+    "pages": 14,
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/76b298fccse5abcd19b6a8bd6c4dd175.pdf",
+    "hash": "05095707b45e22c92ca783766450311bc123d27b7cdd9f6c8ab6c60b83dd499c",
+    "bytes": 2573520,
+    "pages": 5,
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/AvatarCache/0c18a6d50953426006d14df177663310.jpg",
+    "hash": "5e35fb45daf25533a443fc4facbb4e9842814f3636edfeec410d3ca1f6f521a7",
+    "bytes": 2351,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/f1f633515mac4689b3145225f32ccea3.epub",
+    "hash": "15aeab4959dcc73a540fe67d48341de4a8c0c09b9447c7f14ac97056964da129",
+    "bytes": 205530,
+    "study_status": "excluded: unrelated novel; title and TOC inspected"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/090aa56d9262cac6d6b43b09c54afbcb.png",
+    "hash": "371959aa98ca28073d19b4d628cbcff81b3a1049f413b8ff01b2f40b428a9294",
+    "bytes": 670,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/0d053c0bf9a50d76466937b588047146.png",
+    "hash": "ae9c2ffc6ec3b81f2882d0d7e042b979fe70954988ff77cbe9ac5a835173c2e3",
+    "bytes": 710,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/1b581bcb6hc64218ff400cb6471f5d62.pdf",
+    "hash": "405e893fa2734a677b0577ad49bfc27c50fd06a8a10e5df5309e9e3d3b18648a",
+    "bytes": 5217705,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/1b581bcb6hc64218ff400cb6471f5d62.pdf",
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/2126bb43akc1aaab8f10b75d9af43f54.mp4",
+    "hash": "b09cdd80d3affefa03d8b6f3db3fb63915be7071efa3f2a3d2ddcf52ea1d031a",
+    "bytes": 599317208,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/2126bb43akc1aaab8f10b75d9af43f54.mp4",
+    "study_status": "full-timeline sampled captions and board text; no audio transcription"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/27196d14csef0b2a6f52b1389e319d03.pdf",
+    "hash": "f1014522c701f2957bcbd70c3c95ec0a623a67149d161e3b0b73a655037babf2",
+    "bytes": 6743218,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/27196d14csef0b2a6f52b1389e319d03.pdf",
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/3bc80dc69q05b2227637d1c0d73c18d9.pdf",
+    "hash": "28852b75ded7b2b6d7906ef8de76ee424ae7ab8ec2de12936cadecde6dad40c9",
+    "bytes": 6997265,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/3bc80dc69q05b2227637d1c0d73c18d9.pdf",
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/43eeaae4511593f13c177c8943a715b3.png",
+    "hash": "8d6473f0eb616f960d4213928831a4cbd857024d9a94b2d017312d9a5db97fb2",
+    "bytes": 529,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/55b5de581s94c62c495167f02dbbf368.pdf",
+    "hash": "21a8d23dd712b91184bdc5092832fa3a47c406b72153338c24df087498128d67",
+    "bytes": 6993269,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/55b5de581s94c62c495167f02dbbf368.pdf",
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/6d2ed8bc7a0a62928db5114588e82696.png",
+    "hash": "d139ac73fa1926878f055a846f5960b0ce0e622380ca6f76be5471e8fc034afd",
+    "bytes": 490,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/76b298fccse5abcd19b6a8bd6c4dd175.pdf",
+    "hash": "05095707b45e22c92ca783766450311bc123d27b7cdd9f6c8ab6c60b83dd499c",
+    "bytes": 2573520,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/76b298fccse5abcd19b6a8bd6c4dd175.pdf",
+    "study_status": "text_read; notation pages visually checked as documented"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/AvatarCache/0c18a6d50953426006d14df177663310.jpg",
+    "hash": "5e35fb45daf25533a443fc4facbb4e9842814f3636edfeec410d3ca1f6f521a7",
+    "bytes": 2351,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/AvatarCache/0c18a6d50953426006d14df177663310.jpg",
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/a71d3a0ca84e27bbefdcf10b448e3173.png",
+    "hash": "bd0fe7270eb3a6e53f68edfdd3b3d8c352f3fea6faf66f2197e13e4a3476c188",
+    "bytes": 767,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/d35e4826a2003820050ea62f399a2e02.png",
+    "hash": "8f3c2cfc6fae116ddfe79a8de261d25cd81066bd1bba431d282a34c8d27e9fb7",
+    "bytes": 695,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/ebfa5fcfe009cc0558376f8d6fcc3221.jpg",
+    "hash": "0c3615a66f0572667cc9a29e77dc539b3573b982255bb475917219d0568bbc16",
+    "bytes": 7179,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/efcc7673ap4c898fffddbea7910c2497_th2.jpg",
+    "hash": "2b6d91a0b3c9d087a97d8d779880dcdf6cb27d78c86a597cdde8338d8df18443",
+    "bytes": 148281,
+    "study_status": "excluded: photo, thumbnail, avatar or cache, not music evidence"
+  },
+  {
+    "path": "LEARN/20261027/piano progression/加花课程附加学习资料/f1f633515mac4689b3145225f32ccea3.epub",
+    "hash": "15aeab4959dcc73a540fe67d48341de4a8c0c09b9447c7f14ac97056964da129",
+    "bytes": 205530,
+    "duplicate": "LEARN/20261027/piano progression/伴奏织体课程附加学习资料/f1f633515mac4689b3145225f32ccea3.epub",
+    "study_status": "excluded: unrelated novel; title and TOC inspected"
+  }
+]

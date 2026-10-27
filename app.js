@@ -1,12 +1,12 @@
 import {gmPrograms} from './melody-synth.js?v=seiren-pop-1';
 import {pickupTail} from './timeline.js';
-import { mountSeirenUI } from './seiren-ui.js?v=seiren-pop-1';
-import {validateProject} from './project.js?v=seiren-pop-1';
-import {arrangeMelody} from './melody-arranger.js?v=seiren-pop-1';
-import {MelodyWorkspace} from './melody-workspace.js?v=seiren-pop-1';
+import { mountSeirenUI } from './seiren-ui.js?v=course-1';
+import {validateProject} from './project.js?v=course-1';
+import {arrangeMelody} from './melody-arranger.js?v=course-1';
+import {MelodyWorkspace} from './melody-workspace.js?v=course-1';
 import {MelodyPlayer} from './player.js?v=seiren-pop-1';
-import {barLength,normalizeChart,chartFromSegments,protectChart,renderProtected,rewriteWithMelody,preserveLocks} from './fusion.js?v=seiren-pop-1';
-import {encodeAuditedMidi} from './export.js?v=seiren-pop-1';
+import {barLength,normalizeChart,chartFromSegments,protectChart,renderProtected,rewriteWithMelody,preserveLocks} from './fusion.js?v=course-1';
+import {encodeAuditedMidi} from './export.js?v=course-1';
 let melodyLab=null;
 // The accompaniment must share the melody's eighth-note feel. Off-beat onsets near .5 are straight;
 // near .62–.70 are swung. A straight vocal never receives an automatic swing groove.
@@ -17,16 +17,16 @@ const pickupBeats=()=>melodyLab?.pickupBeats||0;
 const protectionNotes=()=>melodyLab?.notes?.length?[...melodyLab.notes,...(pickupBeats()&&melodyLab.repeatPickup!==false?pickupTail(melodyLab.notes,bars.length*barBeats(),pickupBeats()):[])]:[];
 const barBeats=()=>melodyLab?.active?barLength(melodyLab.meter):4;
 import {arpModes,arpRates,arpPresets} from './arpeggiator.js?v=seiren-pop-1';
-import {examplePool,nextExample} from './example-pool.js?v=seiren-pop-1';
+import {examplePool,nextExample} from './example-pool.js?v=course-1';
 import {BeatPlayer,validTempo,clampTempo} from './tempo-player.js?v=seiren-pop-1';
-import {insertCadence,invertChord,parallelColor} from './harmony-actions.js?v=seiren-pop-1';
+import {insertCadence,invertChord,parallelColor} from './harmony-actions.js?v=course-1';
 import {playbackSlice,spaceToggles} from './transport.js?v=seiren-pop-1';
-import {names,mod,parse,generate,approach,events,guitarShapes,scales,midiBytes,chordTones} from './music.js?v=seiren-pop-1';
-import {parseBar,parseChart,chordList,serialize,solve} from './solutions.js?v=seiren-pop-1';
-import {styles,mutate,library,styleLabels,cadenceTo} from './style-engine.js?v=seiren-pop-1';
-import {patterns,voicePlan} from './performance.js?v=seiren-pop-1';
-import {scaleNotes,scalePositions} from './scale-library.js?v=seiren-pop-1';
-import {guitarMelody,melodyShapes,melodyEvents} from './guitar-melody.js?v=seiren-pop-1';
+import {names,mod,parse,generate,approach,events,guitarShapes,scales,midiBytes,chordTones} from './music.js?v=course-1';
+import {parseBar,parseChart,chordList,serialize,solve} from './solutions.js?v=course-1';
+import {styles,mutate,library,styleLabels,cadenceTo} from './style-engine.js?v=course-1';
+import {patterns,voicePlan} from './performance.js?v=course-1';
+import {scaleNotes,scalePositions} from './scale-library.js?v=course-1';
+import {guitarMelody,melodyShapes,melodyEvents} from './guitar-melody.js?v=course-1';
 import {Piano} from './piano.js?v=seiren-pop-1';
 const $=id=>document.getElementById(id);let bars=parseChart('| C | Am | F | G |'),source=structuredClone(bars),selected=0,selectedChord=0,tab='scales',audio=null,timer=null,started=0,run=0,activeNodes=[];
 let startBar=0,isPlaying=false,loading=false,player=null,playbackKind='score';
@@ -51,7 +51,7 @@ function scaleTabGraphic(scale,start){const notes=[];[40,45,50,55,59,64].forEach
 function reference(){const c=parse(selectedSymbol());$('chordName').textContent=c?c.symbol:'—';$('tones').textContent=c?chordTones(c.symbol).join(' · ')+' / BAR '+(selected+1):'點選任一和弦';$('reference').replaceChildren();if(!c)return;if(tab==='chords'){const full=guitarShapes(c.symbol);const shapes=full.length?full:melodyShapes(c.symbol).slice(0,3);if(!shapes.length)$('reference').textContent='目前無完整把位；可參考較簡單七和弦，或切換音階圖。';shapes.forEach((shape,i)=>{const d=document.createElement('div');d.className='diagram';d.innerHTML=`<div class="diagram-title">VOICING 0${i+1}</div>${diagram(shape.frets)}<div class="fret-label">${shape.frets.map(f=>f<0?'×':f).join('　')}</div>${shape.omitted?.length?'<p class="scale-note">省略音：'+shape.omitted.join(' · ')+'</p>':''}`;$('reference').append(d);});return;}const opts=scales(c.symbol,{style:$('style').value,key:+$('key').value});const context=c.symbol+'|'+$('style').value+'|'+$('key').value;if(lastScaleChord!==context){scaleChoice=styles[$('style').value].world?opts[0]?.name:opts.find(o=>o.level==='和弦相容')?.name||opts[0]?.name;lastScaleChord=context;}const chosen=opts.find(o=>o.name===scaleChoice)||opts[0];if(!chosen)return;const controls=document.createElement('div');controls.className='scale-selector';const select=document.createElement('select');select.setAttribute('aria-label','選擇吉他音階');opts.forEach(o=>select.add(new Option(o.name+' · '+o.level,o.name)));select.value=chosen.name;select.onchange=()=>{scaleChoice=select.value;reference();};const audition=document.createElement('button');audition.textContent='PLAY SCALE';audition.onclick=()=>previewScale(chosen,c);controls.append(select,audition);$('reference').append(controls);const positions=scalePositions(chosen),pos=positions[positionChoice]||positions[0];const d=document.createElement('div');d.className='diagram scale-card';d.innerHTML=`<div class="diagram-title">${safe(chosen.name)}</div><div class="scale-notes">${scaleNotes(chosen).join(' · ')}</div><div class="scale-level">${safe(chosen.level)}</div><p class="scale-note">${safe(chosen.note)}${chosen.conflicts.length?' 不含目前和弦的 '+safe(chosen.conflicts.join('、'))+'；可當經過色彩，或調整和弦配置。':''}</p><div class="position-tabs">${positions.map((p,i)=>`<button data-position="${i}" class="${i===positionChoice?'active':''}">Pattern ${i+1} · ${p.start}–${p.end}</button>`).join('')}</div><p class="scale-note">五個重疊把位區域 · 依 CAGED 區域延伸；此圖標示音位，不指定每個手指。紅點＝音階根音。</p>${scaleGraphic(chosen,pos.start,chosen.root)}<div class="tab-caption">Pattern ${pos.index} · 第 ${pos.start}–${pos.end} 格 · 上行練習</div><div class="tab-scroll">${scaleTabGraphic(chosen,pos.start)}</div>`;$('reference').append(d);d.querySelectorAll('[data-position]').forEach(btn=>btn.onclick=()=>{positionChoice=+btn.dataset.position;reference();});}
 
 function config(){return {key:+$('key').value,mode:$('mode').value,style:$('style').value,freedom:$('freedom').value,density:+$('density').value,seed:variation,randomness:$('randomness').value,method,loop:$('loop').checked};}
-function performanceOptions(){return {popFill:$('popFill').value,followMelody:!!melodyLab?.active,barBeats:barBeats(),meter:melodyLab?.meter,policy:melodyLab?.policy||'strict',bpm:melodyLab?.bpm||+$('tempo').value,voicing:$('voicing').value,rate:+$('rate').value,gate:+$('gate').value/100,swing:+$('swing').value/100,human:+$('human').value/100,seed:42,arpMode:$('arpMode').value,arpRate:$('arpRate').value,arpOctaves:+$('arpOctaves').value,arpPhase:$('arpPhase').value,arpAccent:$('arpAccent').value,arpSeed:+$('arpSeed').value};}
+function performanceOptions(){return {key:melodyLab?.active?melodyLab.key:{root:+$('key').value,mode:$('mode').value},popFill:$('popFill').value,followMelody:!!melodyLab?.active,barBeats:barBeats(),meter:melodyLab?.meter,policy:melodyLab?.policy||'strict',bpm:melodyLab?.bpm||+$('tempo').value,voicing:$('voicing').value,rate:+$('rate').value,gate:+$('gate').value/100,swing:+$('swing').value/100,human:+$('human').value/100,seed:42,arpMode:$('arpMode').value,arpRate:$('arpRate').value,arpOctaves:+$('arpOctaves').value,arpPhase:$('arpPhase').value,arpAccent:$('arpAccent').value,arpSeed:+$('arpSeed').value};}
 
 function syncArp(){
  refreshMelody();

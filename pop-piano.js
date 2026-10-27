@@ -1,4 +1,5 @@
 // Original pop piano performances: a stable bar grid with optional phrase-end answers.
+import {isTexture,renderTexture} from './piano-motion.js?v=1.0.0';
 const mod=n=>((n%12)+12)%12;
 export const popPianoPatterns={
  popWhole:{label:'POP 01 · Whole-bar pillars',hits:[0],bass:[0],hold:true},
@@ -14,10 +15,11 @@ export const popPianoPatterns={
  popLift:{label:'POP 11 · Chorus lift',hits:[0,1,2,2.5,3.5],bass:[0,2],fill:true},
  popCadence:{label:'POP 12 · Cadence + small fill',hits:[0,2.5],bass:[0,2],hold:true,fill:true}
 };
-export const isPopPiano=pattern=>Object.hasOwn(popPianoPatterns,pattern);
+export const isPopPiano=pattern=>Object.hasOwn(popPianoPatterns,pattern)||isTexture(pattern);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const overlap=(m,a,b)=>Math.min(m.end,b)-Math.max(m.start,a)>1e-7;
 export function popPianoPerformance(plan,pattern,options={}){
+ if(isTexture(pattern))return renderTexture(plan,pattern,{...options,fillMode:options.popFill==='off'?'off':options.popFill==='more'?'light':'phrase'});
  const cfg=popPianoPatterns[pattern];if(!cfg||!plan.length)return [];
  const bb=options.barBeats||4,end=Math.max(...plan.map(s=>s.beat+s.beats)),melody=options.melody||[];
  const gate=clamp(Number(options.gate??.82),.1,1),human=clamp(Number(options.human??.25),0,1),out=[];

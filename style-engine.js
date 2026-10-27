@@ -1,10 +1,10 @@
 import {mandarinStyle,mandarinStudies,asianPopStudies} from './mandarin-pop.js?v=seiren-pop-1';
 import {darkStyles} from './dark-styles.js?v=seiren-pop-1';
-import {names,mod,parse} from './music.js?v=seiren-pop-1';
-import {parseBar,chordList,parseChart} from './solutions.js?v=seiren-pop-1';
+import {names,mod,parse} from './music.js?v=course-1';
+import {parseBar,chordList,parseChart} from './solutions.js?v=course-1';
 import {songs} from './song-pool.js?v=seiren-pop-1';
 import {worldStyles} from './world-styles.js?v=seiren-pop-1';
-import {worldMutation} from './world-generator.js?v=seiren-pop-1';
+import {worldMutation} from './world-generator.js?v=course-1';
 export const styles={
 Mandopop:mandarinStyle,
 Jazz:{description:'功能替代、次屬和弦、ii–V、三全音／backdoor，讓 3rd 與 7th 連接。',pattern:'jazz',voicing:'rootless',phrases:[['Cmaj9 Ebdim7','Dm9 G13','Em7 A7b9','Dm9 Db7#11'],['Em9 A7alt','Dm9 G13','Fm9 Bb13','C69 G7alt'],['C69','F#m7b5 B7b9','Em9 A7alt','Dm9 G13']],T:['Cmaj9','Em9 A7alt','C69 Ebdim7'],R:['Am9','Em7 A7alt','Dm9 G13'],S:['Fmaj9','Fm9 Bb13','Dm9 G13'],D:['G13','Dm9 Db7#11','G7sus4 G7alt']},

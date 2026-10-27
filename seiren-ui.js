@@ -41,7 +41,7 @@ export function mountSeirenUI(lab) {
   $('nextSong').textContent = 'Next idea';
   ideas.append(exampleLabel, $('loadPreset'), $('nextSong'));
   $('library').setAttribute('aria-label', 'Harmony ideas');
-  const patternHelp = make('p', 'hint seiren-pattern-help', 'POP 01–08: steady support. POP 09–12: small phrase-end fills; busy melodies leave less room.');
+  const patternHelp = make('p', 'hint seiren-pattern-help', 'POP: stable support and small fills. TEXTURE: dotted, tied, spacious and broken rhythms, with triplet or pentatonic answers in true melody gaps.');
   $('popFill').closest('label').after(patternHelp);
   const syncStyles = () => {
     for (const button of compare.querySelectorAll('button')) {

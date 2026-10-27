@@ -1,8 +1,8 @@
-import {arrangeAsianPop} from './mandarin-harmony.js?v=seiren-pop-1';
-import {parse,pitchName,spellChord} from './music.js?v=seiren-pop-1';
-import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=seiren-pop-1';
+import {arrangeAsianPop} from './mandarin-harmony.js?v=course-1';
+import {parse,pitchName,spellChord} from './music.js?v=course-1';
+import {compatible,overlaps,harmonize,validateMelody,chordCompatible} from './harmony.js?v=course-1';
 import {mod} from './analysis.js?v=seiren-pop-1';
-import {styles} from './style-engine.js?v=seiren-pop-1';
+import {styles} from './style-engine.js?v=course-1';
 
 export function phraseNotes(melody,start,end,tolerance=.08){
  return melody.filter(n=>overlaps(n,{start,end})&&!(n.start<start&&n.end<start+tolerance)&&!(n.end>end&&n.start>end-tolerance));

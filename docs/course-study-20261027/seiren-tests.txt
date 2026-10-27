@@ -1,0 +1,29 @@
+✔ Seiren ships the pinned shared module without needing a sibling checkout (1.923ms)
+✔ Seiren retains its pre-extraction theory and basic generation outputs (36.412166ms)
+✔ Seiren independently carries the pinned piano motion module (1.223625ms)
+✔ all six textures honor fill controls, silence and held melody in Seiren (7.946041ms)
+✔ textures preserve melody and export protected notes across keys, modes, meters and pickups (387.439709ms)
+✔ dense chromatic melody remains safe with useful accompaniment (3.993666ms)
+✔ twelve genuinely different pop patterns keep a deterministic bar grid (11.408167ms)
+✔ together/right/left/right uses a chord-tone fifth in the second left-hand pulse (0.346333ms)
+✔ fills answer gaps, stay in the chord and disappear under busy melody or OFF (0.867292ms)
+✔ dense melody reduces eighth-note accompaniment while retaining meter anchors (0.331792ms)
+✔ split chords, N.C., 3/4 and 6/8 keep their boundaries (2.294042ms)
+✔ new performances remain safe and export the same protected notes across keys (466.136042ms)
+✔ Mandarin pop leads the style list and offers all three families plus minor studies (4.1125ms)
+✔ Generate uses different functional families without melody and adapts with melody (12.900916ms)
+✔ musical harmony rejects lower semitones and minor ninths in every register (0.838333ms)
+✔ colour chords avoid the semitone below a sustained tonic (7.434583ms)
+✔ all styles and three variations preserve melody without audible semitone clashes (396.009875ms)
+✔ blues offbeats follow the requested straight or swung feel (0.885333ms)
+✔ explicit BPM labels take precedence over numbered sample fields (0.705625ms)
+✔ exact loop lengths select a plausible tempo and retain leading rests (0.324916ms)
+✔ non-loop downbeat phase preserves the preceding pickup (0.396042ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 671.044333

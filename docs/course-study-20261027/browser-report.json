@@ -1,0 +1,88 @@
+[
+  {
+    "app": "khimaira",
+    "independentSite": true,
+    "patterns": 6,
+    "downloads": [
+      {
+        "pattern": "textureDotted",
+        "bytes": 425,
+        "notes": 47
+      },
+      {
+        "pattern": "textureTied",
+        "bytes": 393,
+        "notes": 43
+      },
+      {
+        "pattern": "textureSpace",
+        "bytes": 269,
+        "notes": 27
+      },
+      {
+        "pattern": "textureBroken",
+        "bytes": 453,
+        "notes": 51
+      },
+      {
+        "pattern": "textureTriplet",
+        "bytes": 297,
+        "notes": 31
+      },
+      {
+        "pattern": "texturePentatonic",
+        "bytes": 329,
+        "notes": 35
+      }
+    ],
+    "midiImport": true,
+    "audioOutput": true,
+    "restored": true,
+    "desktopAndMobile": true,
+    "errors": [],
+    "missing": []
+  },
+  {
+    "app": "seiren",
+    "independentSite": true,
+    "patterns": 6,
+    "downloads": [
+      {
+        "pattern": "textureDotted",
+        "bytes": 700,
+        "notes": 58
+      },
+      {
+        "pattern": "textureTied",
+        "bytes": 668,
+        "notes": 54
+      },
+      {
+        "pattern": "textureSpace",
+        "bytes": 512,
+        "notes": 36
+      },
+      {
+        "pattern": "textureBroken",
+        "bytes": 732,
+        "notes": 62
+      },
+      {
+        "pattern": "textureTriplet",
+        "bytes": 555,
+        "notes": 42
+      },
+      {
+        "pattern": "texturePentatonic",
+        "bytes": 591,
+        "notes": 46
+      }
+    ],
+    "midiImport": true,
+    "audioOutput": true,
+    "restored": true,
+    "desktopAndMobile": true,
+    "errors": [],
+    "missing": []
+  }
+]

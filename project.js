@@ -1,7 +1,7 @@
 import {synthPresets} from './melody-synth.js?v=seiren-pop-1';
 import {validatePickup} from './timeline.js';
-import {validateMelody} from './harmony.js?v=seiren-pop-1';
-import {parse} from './music.js?v=seiren-pop-1';
+import {validateMelody} from './harmony.js?v=course-1';
+import {parse} from './music.js?v=course-1';
 export function validateProject(data){
  const legacy=data?.format==='khimaira-project'&&data.version===1;
  if(!legacy&&!(data?.format==='seiren-project'&&data.version===2))throw Error('Unsupported project format.');

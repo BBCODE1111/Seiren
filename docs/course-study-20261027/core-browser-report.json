@@ -1,0 +1,22 @@
+[
+  {
+    "app": "khimaira",
+    "independentSite": true,
+    "coreVersion": "1.0.0",
+    "midiBytes": 555,
+    "audioOutput": true,
+    "desktopAndMobile": true,
+    "errors": [],
+    "missing": []
+  },
+  {
+    "app": "seiren",
+    "independentSite": true,
+    "coreVersion": "1.0.0",
+    "midiBytes": 1351,
+    "audioOutput": true,
+    "desktopAndMobile": true,
+    "errors": [],
+    "missing": []
+  }
+]

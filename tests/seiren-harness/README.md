@@ -33,3 +33,9 @@ The original 13 Splice vocal samples and feature dumps are not bundled. The 12/1
 - `node --test tests/seiren-harness/*.test.mjs` checks the harmony/rhythm fixes and the twelve POP piano patterns, 36 original idea studies, all transpositions, phrase-end fill gating, split chords, meters and MIDI safety.
 - `node tests/seiren-harness/pop-browser.cjs http://localhost:5181/` runs the real UI without a test hook: featured Mandarin pop, idea loading, repeated Generate, all 12 patterns with nonzero Web Audio output and MIDI downloads, project round-trip and mobile layout. Install Playwright in your test environment first. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` may point to an existing Chromium. `SEIREN_SCREENSHOT_DIR` optionally saves desktop/mobile evidence outside the repository.
 - `seirenmelody.md` documents musical rules, source limitations and the learning workflow. Original learning PDFs remain outside the website repository.
+
+## Course-derived textures
+
+- The same `*.test.mjs` command includes `piano-motion.test.mjs`: six optional TEXTURE patterns, pinned shared module, 12 keys × major/minor × 4/4, 3/4, 6/8, actual protected notes and exported MIDI timing, held/dense melody and silence.
+- With both checkouts, run Khimaira's `scripts/verify-course-browser.cjs /path/to/Seiren OUTPUT_DIR` using Node and Playwright/Chrome. It serves both sites on temporary local ports, imports an original MIDI melody, plays/exports all six patterns, verifies unchanged charts, state/project restore, desktop/mobile and network/page errors. No production test hook or original paid lesson media is used.
+- Read `docs/course-study-20261027.md` before changing derived rules. The shared `piano-motion.js` is generated; update its canonical package and both app adapters as required by `AGENTS.md`.

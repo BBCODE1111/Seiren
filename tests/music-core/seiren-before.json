@@ -1,0 +1,18 @@
+{
+  "parse-and-tones": {
+    "cases": 4568,
+    "sha256": "69ba6bced9d668c65f0d51871e69183b8da228a4ea216d41b6452fa0e9e91d98"
+  },
+  "approaches": {
+    "cases": 4568,
+    "sha256": "14d5180394456ce32c58e456641f363691785ab0ddd48d2f6b0e9fb000d4770d"
+  },
+  "spelling-and-transposition": {
+    "cases": 6456,
+    "sha256": "cd004fef9cb1b6c991f235cdd9d19bade4f5e324ce886b3342980b44350a11be"
+  },
+  "legacy-generation": {
+    "cases": 528,
+    "sha256": "93e23d397caaba43bc8b803ac06a4995c3cc27ec1b706718515cb76b0bb9399f"
+  }
+}

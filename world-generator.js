@@ -1,5 +1,5 @@
-import {parse,mod,names} from './music.js?v=seiren-pop-1';
-import {parseBar,chordList} from './solutions.js?v=seiren-pop-1';
+import {parse,mod,names} from './music.js?v=course-1';
+import {parseBar,chordList} from './solutions.js?v=course-1';
 import {worldScales} from './world-styles.js?v=seiren-pop-1';
 
 const cycle=(n,size)=>((n%size)+size)%size;
