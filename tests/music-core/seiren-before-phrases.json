@@ -1,0 +1,74 @@
+{
+  "popWhole": {
+    "count": 432,
+    "sha256": "26fdbc507522b1a39f3fee6686ac0a38963fd12933e6d084f8f0299379fee313"
+  },
+  "popHalf": {
+    "count": 432,
+    "sha256": "87b900c02fa13cb79cbd633b5626665ffd2952561581bee28a059e7cffa3b767"
+  },
+  "popQuarter": {
+    "count": 432,
+    "sha256": "b35d2e45c4c76e61284120bd9471f88ca69f2204fa7f07ae6024c8f6e8383118"
+  },
+  "popBackbeat": {
+    "count": 432,
+    "sha256": "01e225f48762dcf7a8c3954a927edae9af0a094d2a8fa2dccba971cfdd7e24a1"
+  },
+  "popPush": {
+    "count": 432,
+    "sha256": "68a6a1c6f7bc24ce0ab292234f24a9b5827aafc431e2e8875be188e42fe77930"
+  },
+  "popBassChord": {
+    "count": 432,
+    "sha256": "0d4f14130ef48b17cfa40f912cbdfe21a823ab199c66027c0fe5494c8c460759"
+  },
+  "popSplit": {
+    "count": 432,
+    "sha256": "dff3861da13fc1636d2c0b85b44036d1e3a300d89846896e1df6aeac65ff4bdd"
+  },
+  "popEighth": {
+    "count": 432,
+    "sha256": "ff37170bce82680118fdae08e86df24309d0d1e065549376f6891bad22ca989a"
+  },
+  "popBallad": {
+    "count": 432,
+    "sha256": "38b040810045b8a56dd6901e89eddfc80cc74740135d6b3e62d2f5e0a52cee8f"
+  },
+  "popAnswer": {
+    "count": 432,
+    "sha256": "945287a2a18c12d4d8febdf7a44b5b7f0a346fff5c566ffd5edfbe38e3c71316"
+  },
+  "popLift": {
+    "count": 432,
+    "sha256": "6a89d9dbdca5ac755127b098e119a03b826375617bee3bb128497f4b0716d455"
+  },
+  "popCadence": {
+    "count": 432,
+    "sha256": "1cdf45357b7db663224019706c4b8618cc5b65ecf44dd51a1569fa54c90c8faf"
+  },
+  "textureDotted": {
+    "count": 432,
+    "sha256": "e4cd7c8c20280025a24c0cd0a4a5d2979e228eb71c62090312ee2731d1bc96fd"
+  },
+  "textureTied": {
+    "count": 432,
+    "sha256": "71c366a81bef47672726a9e1632c8f54cdfcc7819558f39a9568a6acfc055778"
+  },
+  "textureSpace": {
+    "count": 432,
+    "sha256": "31656227fdfddb8ed99a376fa18d5b10e1f4d5377551d6fa2bdbca310192ed28"
+  },
+  "textureBroken": {
+    "count": 432,
+    "sha256": "138452810b49ba4622f02aeec74ae6f4f142551eae87d87f8dab3cbfbc69536a"
+  },
+  "textureTriplet": {
+    "count": 432,
+    "sha256": "60896078b7f12988ce9a44d134dd754675d9ad885878f0c9a659fb51a91b3540"
+  },
+  "texturePentatonic": {
+    "count": 432,
+    "sha256": "752353c8c55d3fe7f7b88bc284d82c6a52d5783a48be39b722218e2333314fbd"
+  }
+}

@@ -39,3 +39,7 @@ The original 13 Splice vocal samples and feature dumps are not bundled. The 12/1
 - The same `*.test.mjs` command includes `piano-motion.test.mjs`: six optional TEXTURE patterns, pinned shared module, 12 keys × major/minor × 4/4, 3/4, 6/8, actual protected notes and exported MIDI timing, held/dense melody and silence.
 - With both checkouts, run Khimaira's `scripts/verify-course-browser.cjs /path/to/Seiren OUTPUT_DIR` using Node and Playwright/Chrome. It serves both sites on temporary local ports, imports an original MIDI melody, plays/exports all six patterns, verifies unchanged charts, state/project restore, desktop/mobile and network/page errors. No production test hook or original paid lesson media is used.
 - Read `docs/course-study-20261027.md` before changing derived rules. The shared `piano-motion.js` is generated; update its canonical package and both app adapters as required by `AGENTS.md`.
+
+## Phrase variations
+
+The same test command includes `piano-phrase.test.mjs`: 7,776 pre-change original-mode fingerprints, three distinct phrase forms for each of 18 patterns and three meters, 5,184 protected-arranger/MIDI combinations, project migration, pickup and tempo-map alignment. Do not regenerate old fingerprints to hide a failure. Run Khimaira's `scripts/verify-phrase-browser.cjs /path/to/Seiren OUTPUT_DIR` for both apps' 108 phrase playback/export checks, POP/TEXTURE groups, persistence, melody draft preservation and mobile layout; `VERIFY_LIVE=1` verifies the deployed public sites.

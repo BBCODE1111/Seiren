@@ -1,9 +1,9 @@
-import {isPopPiano} from './pop-piano.js?v=course-1';
-import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=course-1';
-import { parse } from './music.js?v=course-1';
-import { styles as legacyStyles } from './style-engine.js?v=course-1';
-import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=course-1';
-import { performance, voicePlan } from './performance.js?v=course-1';
+import {isPopPiano} from './pop-piano.js?v=phrase-1';
+import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=phrase-1';
+import { parse } from './music.js?v=phrase-1';
+import { styles as legacyStyles } from './style-engine.js?v=phrase-1';
+import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=phrase-1';
+import { performance, voicePlan } from './performance.js?v=phrase-1';
 
 export const barLength = meter => (meter?.numerator || 4) * 4 / (meter?.denominator || 4);
 export function normalizeChart(chart, beats = 4) {

@@ -1,7 +1,7 @@
 import {asianPopStudies} from './mandarin-pop.js?v=seiren-pop-1';
-import {styles} from './style-engine.js?v=course-1';
+import {styles} from './style-engine.js?v=phrase-1';
 import {songs} from './song-pool.js?v=seiren-pop-1';
-import {parseChart,serialize} from './solutions.js?v=course-1';
+import {parseChart,serialize} from './solutions.js?v=phrase-1';
 import {studyMood,moodCategory,exampleTitle} from './example-titles.js?v=seiren-pop-1';
 import {contrastExamples,moodOrder} from './contrast-examples.js?v=seiren-pop-1';
 export function examplePool(style){

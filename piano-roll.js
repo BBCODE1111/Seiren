@@ -1,5 +1,5 @@
 import {contourSegments} from './pitch-view.js';
-import {pitchName} from './music.js?v=course-1';
+import {pitchName} from './music.js?v=phrase-1';
 import { transformNote, createNote, transformSelection, notesInBox, quantizeNotes } from './note-edit.js?v=seiren-pop-1';
 import { noteName } from './analysis.js?v=seiren-pop-1';
 const ns = 'http://www.w3.org/2000/svg';

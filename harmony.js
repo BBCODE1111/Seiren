@@ -1,5 +1,5 @@
-import { parse } from './music.js?v=course-1';
-import { performance } from './performance.js?v=course-1';
+import { parse } from './music.js?v=phrase-1';
+import { performance } from './performance.js?v=phrase-1';
 import { mod, noteNames } from './analysis.js?v=seiren-pop-1';
 
 export const styles = {

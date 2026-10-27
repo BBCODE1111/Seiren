@@ -33,7 +33,7 @@ node --test tests/seiren-harness/*.test.mjs
 | 和弦解析、音程、組成音、音名拼字 | 共用核心；確認適用的相容設定 | 兩邊測試、同步檢查、既有輸出差異 |
 | 和弦進行、替代、終止式、風格改寫 | Khimaira 的 `style-engine.js`、`harmony-actions.js` 等 | Khimaira 回歸；確認沒有改到共用規則 |
 | 依旋律配和弦、避讓、樂句、弱起 | Seiren 的 `harmony.js`、`melody-arranger.js`、`fusion.js` 等 | Seiren 回歸、音域／衝突／鎖定／匯出 |
-| TEXTURE 新織體／加花的純節奏與候選音規則 | `packages/piano-motion/motion.js`；產品各自接入旋律保護 | 同步檢查、兩邊音樂／MIDI 測試、外掛逐音比對 |
+| TEXTURE 新織體／加花及 POP／TEXTURE 樂句的純演奏規則 | `packages/piano-motion/motion.js`；產品各自接入旋律保護 | 同步檢查、兩邊音樂／MIDI 測試、外掛逐音比對 |
 | 舊演奏音型、吉他按法、聲部配置、MIDI | 各產品；不要因名稱相同直接覆蓋 | 受影響產品的音符、時間與 MIDI 測試 |
 | 畫面、音訊辨識、播放器、專案儲存 | 各自產品 | 該產品操作及相容性測試 |
 
@@ -75,3 +75,5 @@ node scripts/verify-shared-music-browser.cjs ../Seiren /tmp/chord-core-browser
 腳本在隨機本機連接埠獨立提供兩個網站，檢查共用模組載入、編輯、移調復原、生成、真實 Web Audio 輸出、MIDI 下載及桌面／手機尺寸，並在輸出目錄保存報告與截圖。`NODE_PATH` 可指向已安裝的 Playwright。
 
 核心發布檔保留在網站根層，符合 Khimaira 現有外掛打包器的依賴追蹤方式。原有 `plugin-1.2.test.js` 會檢查打包後引擎與網站的檔案及生成／演奏一致性；這不等同於完成所有 DAW 原生測試。
+
+2026-10-27 樂句擴充：piano-motion 升至 1.1.0，music-core 仍為 1.0.0。兩邊各保留 18 款、統一 POP／TEXTURE 顯示，新增三種樂句；舊工作階段／專案回到 original。詳見 `docs/piano-phrases-20261027.md`。

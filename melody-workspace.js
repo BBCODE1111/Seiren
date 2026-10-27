@@ -2,13 +2,13 @@ import {synthPresets} from './melody-synth.js?v=seiren-pop-1';
 import {trackBeats,timingFromBeats,tapEstimate} from './audio-features.js';
 import {pickupFor,validatePickup,shiftNotes} from './timeline.js';
 import {normalizeTempoMap,trimTempoMap,beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-pop-1';
-import {pitchName} from './music.js?v=course-1';
+import {pitchName} from './music.js?v=phrase-1';
 import {parseMidi} from './midi.js?v=seiren-pop-1';
 import {inferKeys,audioNotesToBeats,noteName,noteNames} from './analysis.js?v=seiren-pop-1';
-import {validateMelody,demoMelody} from './harmony.js?v=course-1';
-import {PianoRoll} from './piano-roll.js?v=course-1';
+import {validateMelody,demoMelody} from './harmony.js?v=phrase-1';
+import {PianoRoll} from './piano-roll.js?v=phrase-1';
 import {NoteHistory} from './note-edit.js?v=seiren-pop-1';
-import {barLength} from './fusion.js?v=course-1';
+import {barLength} from './fusion.js?v=phrase-1';
 
 const f=n=>Number(n.toFixed(3));
 export class MelodyWorkspace {

@@ -1,3 +1,4 @@
+import {phraseProfiles,normalizePhraseMode} from './piano-motion.js?v=1.1.0';
 // Presentation only. Move the original nodes so IDs, listeners, validation,
 // history, audio routing and project compatibility keep their existing owners.
 export function mountSeirenUI(lab) {
@@ -43,6 +44,22 @@ export function mountSeirenUI(lab) {
   $('library').setAttribute('aria-label', 'Harmony ideas');
   const patternHelp = make('p', 'hint seiren-pattern-help', 'POP: stable support and small fills. TEXTURE: dotted, tied, spacious and broken rhythms, with triplet or pentatonic answers in true melody gaps.');
   $('popFill').closest('label').after(patternHelp);
+  const phraseHelp=make('p','hint seiren-phrase-help');$('pianoPhrase').closest('label').after(phraseHelp);
+  const syncPhrase=()=>{
+    const supported=!!phraseProfiles[$('pattern').value];$('pianoPhrase').disabled=!supported;
+    const mode=normalizePhraseMode($('pianoPhrase').value);$('pianoPhrase').value=mode;
+    phraseHelp.textContent=!supported?'Phrase variations apply to the 12 POP and 6 TEXTURE patterns.':({
+      original:'Original timing and voicing. Compare with the three phrase variations.',
+      auto:'Follows melody activity: lighter under sustained or busy phrases; answers only in gaps. Without melody, uses a four-bar arc.',
+      space:'Fewer upper voices and repeated attacks. Bass and chord arrivals remain steady.',
+      two:'A lighter first bar, then an answer. Melody gaps decide whether extra replies can play.',
+      four:'Four bars: light support, opening, lift, answer. Dense melody keeps the accompaniment restrained.'
+    }[mode]);
+  };
+  for(const id of ['pattern','pianoPhrase','style'])$(id).addEventListener('change',syncPhrase);
+  // Programmatic preset/project changes also render the chart without a DOM change event.
+  new MutationObserver(syncPhrase).observe($('grid'),{childList:true});syncPhrase();
+
   const syncStyles = () => {
     for (const button of compare.querySelectorAll('button')) {
       button.setAttribute('aria-pressed', String(button.dataset.compareStyle === $('style').value));

@@ -1,5 +1,5 @@
 // Original pop piano performances: a stable bar grid with optional phrase-end answers.
-import {isTexture,renderTexture} from './piano-motion.js?v=1.0.0';
+import {isTexture,renderTexture,applyPianoPhrase} from './piano-motion.js?v=1.1.0';
 const mod=n=>((n%12)+12)%12;
 export const popPianoPatterns={
  popWhole:{label:'POP 01 · Whole-bar pillars',hits:[0],bass:[0],hold:true},
@@ -19,7 +19,7 @@ export const isPopPiano=pattern=>Object.hasOwn(popPianoPatterns,pattern)||isText
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const overlap=(m,a,b)=>Math.min(m.end,b)-Math.max(m.start,a)>1e-7;
 export function popPianoPerformance(plan,pattern,options={}){
- if(isTexture(pattern))return renderTexture(plan,pattern,{...options,fillMode:options.popFill==='off'?'off':options.popFill==='more'?'light':'phrase'});
+ if(isTexture(pattern))return applyPianoPhrase(renderTexture(plan,pattern,{...options,fillMode:options.popFill==='off'?'off':options.popFill==='more'?'light':'phrase'}),plan,pattern,options);
  const cfg=popPianoPatterns[pattern];if(!cfg||!plan.length)return [];
  const bb=options.barBeats||4,end=Math.max(...plan.map(s=>s.beat+s.beats)),melody=options.melody||[];
  const gate=clamp(Number(options.gate??.82),.1,1),human=clamp(Number(options.human??.25),0,1),out=[];
@@ -76,5 +76,5 @@ export function popPianoPerformance(plan,pattern,options={}){
  // playback and MIDI cannot disagree about which note-off ends the voice.
  const nextAttack=new Map();
  for(let i=out.length-1;i>=0;i--){const n=out[i],next=nextAttack.get(n.note);if(next!==undefined)n.duration=Math.min(n.duration,next-n.beat);nextAttack.set(n.note,n.beat);}
- return out.filter(n=>n.duration>1e-7);
+ return applyPianoPhrase(out.filter(n=>n.duration>1e-7),plan,pattern,options);
 }

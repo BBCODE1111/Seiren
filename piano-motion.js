@@ -4,7 +4,7 @@
  * Source/page/time, counterexamples and limits: docs/course-study-20261027.md.
  * Pure performance layer: never chooses or rewrites a chord or melody.
  */
-export const PIANO_MOTION_VERSION='1.0.0';
+export const PIANO_MOTION_VERSION='1.1.0';
 export const texturePatterns={
  textureDotted:'TEXTURE · 附點推進 / Dotted',
  textureTied:'TEXTURE · 跨拍延留 / Tied',
@@ -14,6 +14,44 @@ export const texturePatterns={
  texturePentatonic:'TEXTURE · 五聲對話 / Pentatonic answer',
 };
 export const isTexture=pattern=>Object.hasOwn(texturePatterns,pattern);
+
+// Variations belong to a selected pattern, not to a growing list of patterns.
+// Each reply keeps that pattern's placement; 3/4 and 6/8 have independent slots.
+const profile=(four,three,compound)=>({four,three,compound});
+export const phraseProfiles={
+ pianoWhole:profile([2,3],[1,2],[1.5,2.5]),
+ pianoHalf:profile([2.5,3.5],[2,2.5],[1.5,2.5]),
+ pianoQuarter:profile([1.5,3.5],[1.5,2.5],[1,2.5]),
+ pianoBassReply:profile([1.5,3.5],[1.5,2.5],[1,2.5]),
+ pianoBackbeat:profile([1,3.5],[1,2.5],[1,2.5]),
+ pianoPush:profile([2.5,3.5],[1.5,2.5],[1,2.5]),
+ pianoBallad:profile([2.5,3.5],[2,2.5],[1.5,2.5]),
+ pianoBroken:profile([2.5,3.5],[1.5,2.5],[1,2.5]),
+ pianoAnswer:profile([3,3.5],[2,2.5],[2,2.5]),
+ pianoHandTurn:profile([1.75,3.75],[1.5,2.5],[1,2.5]),
+ pianoKpop:profile([2.75,3.5],[1.5,2.5],[1,2.5]),
+ pianoJpop:profile([2.5,3.5],[1.5,2.5],[1,2.5]),
+ popWhole:profile([2,3],[1,2],[1.5,2.5]),
+ popHalf:profile([2.5,3.5],[2,2.5],[1.5,2.5]),
+ popQuarter:profile([1.5,3.5],[1.5,2.5],[1,2.5]),
+ popBackbeat:profile([1,3.5],[1,2.5],[1,2.5]),
+ popPush:profile([1.5,3.5],[1.5,2.5],[1,2.5]),
+ popBassChord:profile([1.5,3.5],[1.5,2.5],[1,2.5]),
+ popSplit:profile([1,3.5],[1,2.5],[1,2.5]),
+ popEighth:profile([2.5,3.5],[1.5,2.5],[1,2.5]),
+ popBallad:profile([2.5,3.5],[2,2.5],[1.5,2.5]),
+ popAnswer:profile([3,3.5],[2,2.5],[2,2.5]),
+ popLift:profile([2.5,3.5],[1.5,2.5],[1,2.5]),
+ popCadence:profile([2.5,3],[2,2.5],[1.5,2.5]),
+ textureDotted:profile([3,3.75],[2,2.75],[2.25,2.5]),
+ textureTied:profile([3,3.5],[2],[2.5]),
+ textureSpace:profile([3,3.5],[2.5],[2]),
+ textureBroken:profile([2.75,3.5],[1.5,2],[2,2.5]),
+ textureTriplet:profile([2],[2],[1.5]),
+ texturePentatonic:profile([1.5,2],[1.5,2],[1.5,2]),
+};
+export const phraseModes=['original','space','two','four','auto'];
+export const normalizePhraseMode=value=>phraseModes.includes(value)?value:'original';
 const mod=n=>((n%12)+12)%12;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const epsilon=1e-7;
@@ -140,4 +178,74 @@ export function renderTexture(plan,pattern,options={}){
  const nextAttack=new Map();
  for(let i=merged.length-1;i>=0;i--){const n=merged[i],next=nextAttack.get(n.note);if(next!==undefined)n.duration=Math.min(n.duration,next-n.beat);nextAttack.set(n.note,n.beat);}
  return merged.filter(n=>n.duration>epsilon);
+}
+
+/** Preserve the original event list unless explicitly enabled. Product adapters
+ * run their final melody protection AFTER this optional phrase arrangement. */
+export function applyPianoPhrase(events,plan,pattern,options={}){
+ const mode=normalizePhraseMode(options.pianoPhrase),cfg=phraseProfiles[pattern];
+ if(mode==='original'||!cfg||!plan.length)return events;
+ const bb=Number(options.barBeats)||4,compound=bb===3&&options.meter?.denominator===8;
+ const melody=options.melody||[],end=options.totalBeats??Math.max(...plan.map(s=>s.beat+s.beats));
+ const chordAt=beat=>plan.find(s=>beat>=s.beat-epsilon&&beat<s.beat+s.beats-epsilon);
+ const isBass=n=>n.role==='bass'||n.part==='bass';
+ const isFill=n=>n.fill||n.articulation==='fill';
+ const output=[];
+ for(let bar=Math.floor(Math.min(0,plan[0].beat)/bb)*bb;bar<end-epsilon;bar+=bb){
+  const finish=Math.min(bar+bb,end),index=Math.round(bar/bb),phase=((index%4)+4)%4;
+  const active=melody.filter(n=>overlap(n,bar,finish));
+  const occupied=active.reduce((sum,n)=>sum+Math.max(0,Math.min(n.end,finish)-Math.max(n.start,bar)),0);
+  const busy=active.filter(n=>n.start>=bar-epsilon).length>=Math.max(4,bb*1.5)||occupied>bb*.65;
+  const form=busy||mode==='space'?'space':mode==='two'?(phase%2?'answer':'space'):['space','normal','lift','answer'][phase];
+  const notes=events.filter(n=>n.beat>=bar-epsilon&&n.beat<finish-epsilon);
+  const upper=notes.filter(n=>!isBass(n)&&!isFill(n)).sort((a,b)=>a.beat-b.beat||a.note-b.note);
+  const groups=[];
+  for(const n of upper){const previous=groups.at(-1);if(previous&&n.beat-previous[0].beat<.02)previous.push(n);else groups.push([n]);}
+  let selected=notes.filter(isBass).map(n=>({...n}));
+  // In variations even old POP fills yield to sustained/new melody notes.
+  selected.push(...notes.filter(n=>isFill(n)&&!busy&&!melody.some(m=>overlap(m,n.beat,n.beat+n.duration))).map(n=>({...n})));
+  groups.forEach((group,i)=>{
+   group.sort((a,b)=>a.note-b.note);
+   const chord=chordAt(group[0].beat),arrival=chord&&Math.abs(group[0].beat-chord.beat)<.02;
+   const tied=group.some(n=>n.articulation==='tied');
+   if(form==='space'&&i%2&&!arrival&&!tied)return;
+   let voices=group;
+   if(form==='space')voices=group.slice(0,2);
+   if(form==='answer')voices=i%2?[group.at(-1)]:group.slice(0,2);
+   if(form==='lift'&&i%2)voices=group.slice(-2);
+   selected.push(...voices.map(n=>({...n,velocity:n.velocity*(form==='space'?.88:form==='answer'?.94:1)})));
+  });
+  // Sparse patterns retain their rests; ties retain one attack. Reply slots are
+  // authored per pattern/meter, never a random density multiplier or swing shift.
+  if(!busy&&['answer','lift'].includes(form)&&finish>=bar+bb-epsilon){
+   const slots=bb===4?cfg.four:bb===3?(compound?cfg.compound:cfg.three):[];
+   for(const [i,local] of slots.entries()){
+    const beat=bar+local,chord=chordAt(beat);if(!chord)continue;
+    const duration=Math.min(.36*(options.gate??.82),chord.beat+chord.beats-beat,finish-beat);
+    if(duration<.06||melody.some(m=>overlap(m,beat,Math.min(finish,beat+.6))))continue;
+    // Never overwrite a fill, squeeze an answer through a chord change, or
+    // re-strike a tied voice while its authored tie is still sounding.
+    if(notes.some(n=>!isBass(n)&&(isFill(n)||n.articulation==='tied')&&n.beat<beat+duration&&n.beat+n.duration>beat+epsilon))continue;
+    const upper=[...new Set(chord.notes.slice(1))].sort((a,b)=>a-b);if(!upper.length)continue;
+    const reverse=(Math.floor(index/4)+(options.seed??42))%2===1;
+    const pitch=(i+(reverse?1:0))%2?upper.at(-1):upper[0];
+    selected=selected.filter(n=>isBass(n)||isFill(n)||Math.abs(n.beat-beat)>=.02);
+    for(const n of selected)if(!isBass(n)&&n.beat<beat&&n.beat+n.duration>beat)n.duration=beat-n.beat;
+    const sample=upper.length&&events.find(n=>!isBass(n));
+    selected.push({beat,note:pitch,duration,velocity:form==='lift'?.53:.47,articulation:'phrase',fill:false,
+     ...(sample&&'part' in sample?{part:'upper'}:{}),...(sample&&'role' in sample?{role:'chords'}:{})});
+   }
+  }
+  output.push(...selected);
+ }
+ // Changes of harmony, leading/trailing silence and repeated keys remain hard
+ // boundaries after rearranging. Absolute bars preserve phase when cueing later.
+ const sorted=output.flatMap(n=>{const chord=chordAt(n.beat);if(!chord)return [];return [{...n,duration:Math.min(n.duration,chord.beat+chord.beats-n.beat,end-n.beat)}];}).filter(n=>n.duration>epsilon).sort((a,b)=>a.beat-b.beat||a.note-b.note);
+ const last=new Map(),clean=[];
+ for(const n of sorted){const previous=last.get(n.note);
+  if(previous&&Math.abs(previous.beat-n.beat)<epsilon){previous.duration=Math.max(previous.duration,n.duration);previous.velocity=Math.max(previous.velocity,n.velocity);continue;}
+  if(previous)previous.duration=Math.min(previous.duration,n.beat-previous.beat);
+  clean.push(n);last.set(n.note,n);
+ }
+ return clean.filter(n=>n.duration>epsilon);
 }
