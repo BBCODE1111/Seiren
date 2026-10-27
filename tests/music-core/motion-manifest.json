@@ -1,5 +1,6 @@
 {
-  "version": "1.1.0",
+  "version": "2.0.0",
   "source": "Khimaira/packages/piano-motion/motion.js",
-  "sha256": "776fd7574337edb0f96f6bea36b327bf441aa0755cbd80cb3284a7479b630670"
+  "sha256": "4ed1b4a9b68cc8ecf1b0e52f17a71d18961bbee16c6b0ab523d53b2b36858daa",
+  "legacySha256": "0ffc990d379a71a6d9592282538f9bb3a89d8466147e2f1e6d198a343c2dbd1e"
 }

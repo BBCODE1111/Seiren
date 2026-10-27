@@ -1,4 +1,6 @@
-# Shared piano motion 1.1.0
+# Shared piano motion 2.0.0
+
+現行規則與相容性見 `docs/piano-audit-20261027.md`。2.0.0 修正拍號辨識度、局部旋律密度、音型身分與踏板匯出；舊專案使用 `pianoRevision:1` 的凍結演奏。以下 1.1.0 說明保留作歷史紀錄，與新文件衝突時以新文件為準。
 
 唯一來源為 `motion.js`。使用 `../music-core/README.md` 的同步流程更新 Khimaira 與 Seiren，禁止手改網站發布副本。
 
@@ -15,3 +17,4 @@
 `applyPianoPhrase(events, plan, pattern, options)` 在既有 renderer 後、產品最終保護前執行。`pianoPhrase` 接受 original／space／two／four／auto，缺失或無效值保持 original；不修改原始事件與和弦計劃。新樂句使用各款獨立的 `phraseProfiles` 回應拍點，保留和弦到達、低音、休止與延留，不負責生成和弦。詳細條件與產品預設見 `docs/piano-phrases-20261027.md`。
 
 `compatibility-corpus.mjs` 與 `fixtures/*-before-phrases.json` 是改動前演奏指紋：Khimaira 2,592、Seiren 7,776。原型必須完全一致，不可為通過測試重新產生 fixture。同步命令也管理 Seiren 的 corpus 副本與維護文件。兩站新資料可啟用樂句，舊儲存／專案必須還原 original。
+共同來源亦包含 `piano-motion-v1.js`（凍結，不修改）與 `piano-pedal.js`（MIDI 踏板區段／事件）。同步與驗證兩站後再發布。

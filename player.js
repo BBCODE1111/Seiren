@@ -1,5 +1,5 @@
 import {playMelodyTone} from './melody-synth.js?v=seiren-pop-1';
-import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=seiren-pop-1';
+import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=piano-audit-1';
 import {Piano} from './piano.js?v=seiren-pop-1';
 import {pickupTail,validatePickup} from './timeline.js';
 

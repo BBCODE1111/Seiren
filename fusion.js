@@ -1,9 +1,9 @@
-import {isPopPiano} from './pop-piano.js?v=phrase-1';
-import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=phrase-1';
-import { parse } from './music.js?v=phrase-1';
-import { styles as legacyStyles } from './style-engine.js?v=phrase-1';
-import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=phrase-1';
-import { performance, voicePlan } from './performance.js?v=phrase-1';
+import {isPopPiano} from './pop-piano.js?v=piano-audit-1';
+import {arrangeMelody,followMelodyRhythm,phraseNotes,structuralNotes} from './melody-arranger.js?v=piano-audit-1';
+import { parse } from './music.js?v=piano-audit-1';
+import { styles as legacyStyles } from './style-engine.js?v=piano-audit-1';
+import { harmonize, auditHarmony, compatible, overlaps } from './harmony.js?v=piano-audit-1';
+import { performance, voicePlan } from './performance.js?v=piano-audit-1';
 
 export const barLength = meter => (meter?.numerator || 4) * 4 / (meter?.denominator || 4);
 export function normalizeChart(chart, beats = 4) {
@@ -99,8 +99,23 @@ export function renderProtected(chart, pattern, options={}, melody=[]) {
   const end=Math.min(n.beat+n.duration,span.end,chart.length*beats);n.duration=end-n.beat;if(n.duration<=0)continue;
   const active=melody.filter(m=>overlaps(m,{start:n.beat,end}));
   const ceiling=active.length?Math.min(...active.map(m=>m.pitch))-2:108;
-  while(n.note>ceiling&&n.note-12>=21){n.note-=12;lowered++;}
-  const fits=p=>p<=ceiling&&active.every(m=>compatible(p,m.pitch,policy,chord));
+  while(n.note>ceiling&&n.note-12>=21)n.note-=12;
+  let register=p=>p<=ceiling;
+  if(n.role!=='bass'&&n.note<52){
+   const third=chord.pcs.find(pc=>[3,4].includes(((pc-chord.root)%12+12)%12));
+   const seventh=chord.pcs.find(pc=>[10,11].includes(((pc-chord.root)%12+12)%12));
+   const shell=[third??chord.pcs[0],seventh??chord.root];
+   if(!shell.includes(((original.note%12)+12)%12)){removed++;continue;}
+   const candidates=Array.from({length:57},(_,i)=>52+i).filter(p=>shell.includes(p%12)&&p<=ceiling&&active.every(m=>compatible(p,m.pitch,policy,chord)));
+   if(candidates.length){n.note=candidates.sort((a,b)=>Math.abs(a-original.note)-Math.abs(b-original.note)||a-b)[0];adjusted++;register=p=>p>=52&&p<=ceiling;}
+   else{
+    const floor=Math.max(60,...active.map(m=>m.pitch+12));
+    const above=Array.from({length:49},(_,i)=>60+i).filter(p=>p>=floor&&p%12===((original.note%12)+12)%12&&active.every(m=>compatible(p,m.pitch,policy,chord)));
+    if(!above.length){removed++;continue;}
+    n.note=above[0];adjusted++;register=p=>p>=floor&&p<=108;
+   }
+  }
+  const fits=p=>(n.role==='bass'||p>=52)&&register(p)&&active.every(m=>compatible(p,m.pitch,policy,chord));
   if(!fits(n.note)){
    const alternatives=Array.from({length:88},(_,i)=>21+i).filter(p=>chord.pcs.includes(((p%12)+12)%12)&&fits(p)).sort((a,b)=>Math.abs(a-n.note)-Math.abs(b-n.note)||a-b);
    if(alternatives.length){n.note=alternatives[0];adjusted++;}
@@ -109,6 +124,15 @@ export function renderProtected(chart, pattern, options={}, melody=[]) {
     n.duration=Math.min(end,conflict?.start??end)-n.beat;if(n.duration<.04){removed++;continue;}adjusted++;
    }
   }
+  if(options.pianoRevision!==1&&['phrase','fill'].includes(n.articulation)){
+   const heldPitch=p=>notes.some(previous=>previous.note===p&&['held','tied'].includes(previous.articulation)&&previous.beat<n.beat&&previous.beat+previous.duration>n.beat+1e-7);
+   if(heldPitch(n.note)){
+    const above=Math.max(60,...active.map(m=>m.pitch+12));
+    const alternatives=Array.from({length:57},(_,i)=>52+i).filter(p=>chord.pcs.includes(p%12)&&!heldPitch(p)&&(p<=ceiling||p>=above)&&active.every(m=>compatible(p,m.pitch,policy,chord))).sort((a,b)=>Math.abs(a-original.note)-Math.abs(b-original.note)||a-b);
+    if(!alternatives.length){removed++;continue;}n.note=alternatives[0];adjusted++;
+   }
+  }
+  lowered+=Math.max(0,Math.floor((original.note-n.note)/12));
   notes.push(n);
  }
  notes.sort((a,b)=>a.beat-b.beat||a.note-b.note);const merged=[],last=new Map();

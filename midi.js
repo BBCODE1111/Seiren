@@ -1,3 +1,4 @@
+import {pedalIntervals,pedalMidiEvents} from './piano-pedal.js?v=2.0.0';
 import {pickupExportLayout,shiftNotes,validatePickup} from './timeline.js';
 // Standard MIDI File types 0/1, PPQ timing. No server or third-party parser.
 const utf8 = new TextEncoder();
@@ -184,9 +185,10 @@ function trackChunk(name, events) {
   }
   data.push(0, 0xff, 0x2f, 0); return chunk('MTrk', data);
 }
-export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [], pickupBeats = 0, pickupMode = 'padded', programs = {} }) {
+export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat: 0, bpm: 120 }], meter = { numerator: 4, denominator: 4 }, includeMelody = true, separateBass = false, chordMarkers = [], pickupBeats = 0, pickupMode = 'padded', programs = {}, pedal = false, pedalSpans, totalBeats }) {
   const ppq = 960, layout = pickupExportLayout(pickupBeats, meter, pickupMode), shift = layout.shift;
   for (const n of [...melody, ...accompaniment]) if (n.start < -pickupBeats - 1e-7) throw Error('Note precedes BAR 0.');
+  const sustain=pedal?(pedalSpans??pedalIntervals({chordSpans:chordMarkers,notes:accompaniment,melody,totalBeats})):[];
   melody = shiftNotes(melody, shift); accompaniment = shiftNotes(accompaniment, shift);
   chordMarkers = chordMarkers.map(c => ({...c,start:c.start+shift}));
   const fileTempos = [{beat:0,bpm:tempoAt(-shift,tempoMap)},...normalizeTempoMap(tempoMap).filter(t=>t.beat>-shift).map(t=>({...t,beat:t.beat+shift}))];
@@ -203,7 +205,7 @@ export function encodeMidi({ melody = [], accompaniment = [], tempoMap = [{ beat
   for(const c of chordMarkers){const data=[...utf8.encode(c.symbol)];tempos.push({tick:Math.round(c.start*ppq),order:2,bytes:[0xff,6,...vlqBytes(data.length),...data]});}
   const makeNotes = (notes, channel, name) => {
     const program=programs[channel===0?'melody':channel===2?'bass':'harmony']??0;if(!Number.isInteger(program)||program<0||program>127)throw Error('Invalid MIDI program.');
-    const events = [{tick:0,order:1,bytes:[0xc0+channel,program]}];
+    const events = [{tick:0,order:1,bytes:[0xc0+channel,program]},...(pedal&&channel===1?pedalMidiEvents(sustain,ppq,channel,shift):[])];
     for (const note of notes) {
       if (!Number.isInteger(note.pitch) || note.pitch < 0 || note.pitch > 127 || !Number.isFinite(note.start) || !Number.isFinite(note.end) || note.start < 0 || note.end <= note.start) throw Error('不能匯出無效音符。');
       const start = Math.round(note.start * ppq), end = Math.max(start + 1, Math.round(note.end * ppq));

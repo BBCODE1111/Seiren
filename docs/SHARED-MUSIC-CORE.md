@@ -77,3 +77,5 @@ node scripts/verify-shared-music-browser.cjs ../Seiren /tmp/chord-core-browser
 核心發布檔保留在網站根層，符合 Khimaira 現有外掛打包器的依賴追蹤方式。原有 `plugin-1.2.test.js` 會檢查打包後引擎與網站的檔案及生成／演奏一致性；這不等同於完成所有 DAW 原生測試。
 
 2026-10-27 樂句擴充：piano-motion 升至 1.1.0，music-core 仍為 1.0.0。兩邊各保留 18 款、統一 POP／TEXTURE 顯示，新增三種樂句；舊工作階段／專案回到 original。詳見 `docs/piano-phrases-20261027.md`。
+
+2026-10-27 嚴格審查修正：piano-motion 2.0.0；music-core 不變。舊專案以 pianoRevision 1 保存原型與樂句，新工作階段使用修正後本體。新規則、依據、相容性決策與驗收詳見 `docs/piano-audit-20261027.md`。

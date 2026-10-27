@@ -1,4 +1,4 @@
-import {phraseProfiles,normalizePhraseMode} from './piano-motion.js?v=1.1.0';
+import {phraseProfiles,normalizePhraseMode} from './piano-motion.js?v=2.0.0';
 // Presentation only. Move the original nodes so IDs, listeners, validation,
 // history, audio routing and project compatibility keep their existing owners.
 export function mountSeirenUI(lab) {
@@ -27,6 +27,8 @@ export function mountSeirenUI(lab) {
   headerActions.append($('saveProject'), $('loadProject').closest('label'), originalHeader.querySelector('button'));
   originalHeader.remove();
   $('saveProject').textContent = 'Save project';
+  $('loadProject').closest('label').firstChild.textContent='Load project';
+  $('loadProject').closest('label').setAttribute('aria-label','Load project');
   $('saveProject').title = 'Save notes, chords and settings as a project';
   top.append(host.querySelector('.melody-upload'), $('generate'), $('loosen'));
   $('generate').textContent = 'Generate harmony';
@@ -42,18 +44,18 @@ export function mountSeirenUI(lab) {
   $('nextSong').textContent = 'Next idea';
   ideas.append(exampleLabel, $('loadPreset'), $('nextSong'));
   $('library').setAttribute('aria-label', 'Harmony ideas');
-  const patternHelp = make('p', 'hint seiren-pattern-help', 'POP: stable support and small fills. TEXTURE: dotted, tied, spacious and broken rhythms, with triplet or pentatonic answers in true melody gaps.');
+  const patternHelp = make('p', 'hint seiren-pattern-help', 'Piano accompaniment · 鋼琴專用。POP offers stable support; TEXTURE keeps dotted, tied, broken, triplet and pentatonic motifs even with FILLS off.');
   $('popFill').closest('label').after(patternHelp);
   const phraseHelp=make('p','hint seiren-phrase-help');$('pianoPhrase').closest('label').after(phraseHelp);
   const syncPhrase=()=>{
     const supported=!!phraseProfiles[$('pattern').value];$('pianoPhrase').disabled=!supported;
     const mode=normalizePhraseMode($('pianoPhrase').value);$('pianoPhrase').value=mode;
     phraseHelp.textContent=!supported?'Phrase variations apply to the 12 POP and 6 TEXTURE patterns.':({
-      original:'Original timing and voicing. Compare with the three phrase variations.',
-      auto:'Follows melody activity: lighter under sustained or busy phrases; answers only in gaps. Without melody, uses a four-bar arc.',
+      original:'Pattern as written · 按音型本體演奏。',
+      auto:'Follows local melody activity: lighter around dense new syllables, with replies in breaths or over settled long tones.',
       space:'Fewer upper voices and repeated attacks. Bass and chord arrivals remain steady.',
-      two:'A lighter first bar, then an answer. Melody gaps decide whether extra replies can play.',
-      four:'Four bars: light support, opening, lift, answer. Dense melody keeps the accompaniment restrained.'
+      two:'A complete first bar, then a light answer. Defining rhythm accents stay in place.',
+      four:'Four bars: full pattern, light support, lift, fuller answer. Busy beats yield to the melody.'
     }[mode]);
   };
   for(const id of ['pattern','pianoPhrase','style'])$(id).addEventListener('change',syncPhrase);
@@ -107,6 +109,9 @@ export function mountSeirenUI(lab) {
   empty.append(emptyActions);
   editor.append(empty);
   host.prepend(top, styles, ideas, notices, editor, inspector);
+  const mobileStart=matchMedia('(max-width:600px)');
+  const placeStart=()=>{if(mobileStart.matches)top.after(empty);else editor.append(empty);};
+  mobileStart.addEventListener('change',placeStart);placeStart();
   host.append(transport);
   transport.classList.add('seiren-transport');
   // Keep these controls visible and directly usable in permanent panels.

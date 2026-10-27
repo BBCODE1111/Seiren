@@ -8,3 +8,5 @@
 - 保留其他正在進行的未提交修改；遇到測試失敗，先比對修改前基準。不得為讓測試通過而直接重製 golden fixture，或恢復舊版已撤銷的旋律衝突預期。
 
 - POP／TEXTURE 樂句共用 `applyPianoPhrase`，先讀 `docs/piano-phrases-20261027.md`；各產品原有 12 款 renderer 與生成邏輯不合併。保留 original 演奏指紋及舊專案遷移。Khimaira 的 POP 顯示仍使用舊 piano* ID。
+
+- 現行演奏規格改以 `docs/piano-audit-20261027.md` 為準。舊 pianoRevision 1 使用凍結演奏；新規則需通過拍號辨識度、人聲式樂句差異、低音域保護及 CC64 實際延音稽核，不只檢查音符不為空。

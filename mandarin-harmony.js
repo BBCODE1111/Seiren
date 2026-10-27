@@ -1,6 +1,6 @@
-import {parse,pitchName} from './music.js?v=phrase-1';
-import {parseBar} from './solutions.js?v=phrase-1';
-import {compatible,overlaps} from './harmony.js?v=phrase-1';
+import {parse,pitchName} from './music.js?v=piano-audit-1';
+import {parseBar} from './solutions.js?v=piano-audit-1';
+import {compatible,overlaps} from './harmony.js?v=piano-audit-1';
 import {asianPopStudies} from './mandarin-pop.js?v=seiren-pop-1';
 const mod=n=>((n%12)+12)%12;
 export function transposePopChord(symbol,key){

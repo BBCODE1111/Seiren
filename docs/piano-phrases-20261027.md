@@ -1,5 +1,7 @@
 # 18 款 POP／TEXTURE 的樂句變化 — 2026-10-27
 
+此為 1.1.0 歷史紀錄；現行 2.0.0 的音型本體、樂句與舊專案相容性以 [嚴格審查修正](piano-audit-20261027.md) 為準。
+
 ## 產品行為
 
 兩邊各保留 18 款：12 POP + 6 TEXTURE。Khimaira 原有 Piano 改以 POP 顯示，但內部 piano* ID、彈法、既存專案保持不變；它的 12 POP 與 Seiren 的 12 POP 並非相同節奏。兩個主選單分組顯示 POP 與 TEXTURE；Khimaira 專用面板也使用同名分組。

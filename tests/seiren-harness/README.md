@@ -43,3 +43,7 @@ The original 13 Splice vocal samples and feature dumps are not bundled. The 12/1
 ## Phrase variations
 
 The same test command includes `piano-phrase.test.mjs`: 7,776 pre-change original-mode fingerprints, three distinct phrase forms for each of 18 patterns and three meters, 5,184 protected-arranger/MIDI combinations, project migration, pickup and tempo-map alignment. Do not regenerate old fingerprints to hide a failure. Run Khimaira's `scripts/verify-phrase-browser.cjs /path/to/Seiren OUTPUT_DIR` for both apps' 108 phrase playback/export checks, POP/TEXTURE groups, persistence, melody draft preservation and mobile layout; `VERIFY_LIVE=1` verifies the deployed public sites.
+
+## Strict piano audit
+
+`piano-audit.test.mjs` adds all 18 first-bar fingerprints in each meter with fills off, Demo local-density checks, three original vocal-like phrase fixtures with per-pattern two/four note-count contrast (relative to two), low-register safety, light eighth alternation and sustain-aware CC64 export audit across all patterns/meters/fixtures and pickup. Old `piano-phrase` golden files now explicitly exercise pianoRevision 1; new projects use revision 2. No old fixture was regenerated. See `docs/piano-audit-20261027.md` for the user-approved compatibility decision.

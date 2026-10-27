@@ -1,5 +1,5 @@
 import {yinPitch} from './analysis.js?v=seiren-pop-1';
-import {normalizeTempoMap,secondsToBeat} from './midi.js?v=seiren-pop-1';
+import {normalizeTempoMap,secondsToBeat} from './midi.js?v=piano-audit-1';
 const median=a=>{const s=[...a].sort((a,b)=>a-b);return s[Math.floor(s.length/2)]||0;};
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 // Radix-2 FFT, positive log-magnitude differences: independent of transcribed notes.

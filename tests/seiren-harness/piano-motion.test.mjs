@@ -15,6 +15,7 @@ test('Seiren independently carries the pinned piano motion module',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../music-core/motion-manifest.json',import.meta.url)));
  assert.equal(PIANO_MOTION_VERSION,manifest.version);
  assert.equal(createHash('sha256').update(readFileSync(new URL('../../piano-motion.js',import.meta.url))).digest('hex'),manifest.sha256);
+ assert.equal(createHash('sha256').update(readFileSync(new URL('../../piano-motion-v1.js',import.meta.url))).digest('hex'),manifest.legacySha256);
 });
 test('all six textures honor fill controls, silence and held melody in Seiren',()=>{
  const chart=parseChart('| C | C | C | C |');

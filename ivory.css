@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
 :root{--paper:#f0eadc;--accent:#c9ad78;--panel:#142024;--line:#586056}
 html{scroll-padding-top:240px}body{font-family:'DM Sans',sans-serif}body::before{opacity:.42;background-image:url('greek-relics.png');background-size:cover;background-position:right top}
 header{padding:12px 4%;height:76px;background:#0d171be8}.brand{font-family:'Cinzel',Georgia,serif;font-size:22px;letter-spacing:4px}.brand small{font-size:8px}.brand img{width:42px;height:42px}.research-link{display:none}.header-note{font-family:'Cinzel',serif;letter-spacing:2px}

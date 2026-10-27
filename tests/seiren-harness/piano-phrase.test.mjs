@@ -12,10 +12,10 @@ import {parseMidi} from '../../midi.js';
 import {validateProject} from '../../project.js';
 const ids=Object.keys({...popPianoPatterns,...texturePatterns});
 const meters=[[4,{numerator:4,denominator:4}],[3,{numerator:3,denominator:4}],[3,{numerator:6,denominator:8}]];
-test('all 18 original performances retain the deployed 7776-case event contract',()=>{
+test('all 18 original performances retain the deployed 7776-case legacy event contract',()=>{
  const expected=JSON.parse(readFileSync(new URL('../music-core/seiren-before-phrases.json',import.meta.url)));
- assert.deepEqual(phraseCorpus(performance,ids,meters),expected);
- assert.deepEqual(phraseCorpus(performance,ids,meters,{pianoPhrase:'original'}),expected);
+ assert.deepEqual(phraseCorpus(performance,ids,meters,{pianoRevision:1}),expected);
+ assert.deepEqual(phraseCorpus(performance,ids,meters,{pianoPhrase:'original',pianoRevision:1}),expected);
 });
 test('each pattern has three distinct phrases in every supported meter; auto responds to melody',()=>{
  assert.equal(ids.length,18);
@@ -24,12 +24,13 @@ test('each pattern has three distinct phrases in every supported meter; auto res
    const base={barBeats,meter,human:0,popFill:'off'},out=['original','space','two','four'].map(pianoPhrase=>performance(chart,id,{...base,pianoPhrase}));
    assert.equal(new Set(out.map(ns=>JSON.stringify(ns.map(n=>[n.beat,n.note,n.duration])))).size,4,id+' '+meter.numerator+'/'+meter.denominator);
    const dense=Array.from({length:8*barBeats*2},(_,i)=>({pitch:72+i%12,start:i*.5,end:i*.5+.47}));
+   const automatic=performance(chart,id,{...base,pianoPhrase:'auto',melody:dense});
+   assert.ok(!automatic.some(n=>n.articulation==='phrase'||n.fill||n.articulation==='fill'));
+   assert.deepEqual(automatic,performance(chart,id,{...base,pianoPhrase:'space',melody:dense}));
+   // A settled held note is no longer treated as a bar full of busy onsets.
    const held=[{pitch:72,start:0,end:8*barBeats}];
-   for(const melody of [dense,held]){
-    const automatic=performance(chart,id,{...base,pianoPhrase:'auto',melody});
-    assert.ok(!automatic.some(n=>n.articulation==='phrase'||n.fill||n.articulation==='fill'));
-    assert.deepEqual(automatic,performance(chart,id,{...base,pianoPhrase:'space',melody}));
-   }
+   assert.ok(performance(chart,id,{...base,pianoPhrase:'auto',melody:held}).length);
+
   }
  }
 });
@@ -54,7 +55,7 @@ test('phrase modes preserve melody, locks, split rests and audited MIDI across k
 });
 test('project migration keeps missing or invalid phrase choices on original and retains explicit choices',()=>{
  const project={format:'seiren-project',version:2,bars:[{chords:[{symbol:'C',beats:4}]}],settings:{pattern:'popHalf'}};
- assert.equal(validateProject(project).settings.pianoPhrase,'original');assert.ok(!('pianoPhrase' in project.settings));
+ assert.equal(validateProject(project).settings.pianoRevision,1);assert.equal(validateProject({...project,settings:{pianoRevision:2}}).settings.pianoRevision,2);assert.equal(validateProject(project).settings.midiPedal,'off');assert.equal(validateProject(project).settings.pianoPhrase,'original');assert.ok(!('pianoPhrase' in project.settings));
  for(const pianoPhrase of ['original','space','two','four','auto'])assert.equal(validateProject({...project,settings:{...project.settings,pianoPhrase}}).settings.pianoPhrase,pianoPhrase);
  assert.equal(validateProject({...project,settings:{pianoPhrase:'bad'}}).settings.pianoPhrase,'original');
 });

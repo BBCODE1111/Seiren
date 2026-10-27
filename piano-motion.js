@@ -1,17 +1,18 @@
 // Generated from Khimaira/packages/piano-motion/motion.js; edit the canonical source and sync.
+import {renderTexture as renderLegacyTexture,applyPianoPhrase as applyLegacyPhrase} from './piano-motion-v1.js';
 /**
  * Original realizations of rhythm/rest/tie and targeted-fill concepts.
  * Source/page/time, counterexamples and limits: docs/course-study-20261027.md.
  * Pure performance layer: never chooses or rewrites a chord or melody.
  */
-export const PIANO_MOTION_VERSION='1.1.0';
+export const PIANO_MOTION_VERSION='2.0.0';
 export const texturePatterns={
- textureDotted:'TEXTURE · 附點推進 / Dotted',
- textureTied:'TEXTURE · 跨拍延留 / Tied',
- textureSpace:'TEXTURE · 留白回答 / Space',
- textureBroken:'TEXTURE · 柱式與分解 / Broken',
- textureTriplet:'TEXTURE · 三連音回應 / Triplet answer',
- texturePentatonic:'TEXTURE · 五聲對話 / Pentatonic answer',
+ textureDotted:'TEXTURE · Dotted / 附點推進',
+ textureTied:'TEXTURE · Tied / 跨拍延留',
+ textureSpace:'TEXTURE · Space / 留白回答',
+ textureBroken:'TEXTURE · Broken / 柱式與分解',
+ textureTriplet:'TEXTURE · Triplet answer / 三連音回應',
+ texturePentatonic:'TEXTURE · Pentatonic answer / 五聲對話',
 };
 export const isTexture=pattern=>Object.hasOwn(texturePatterns,pattern);
 
@@ -50,6 +51,25 @@ export const phraseProfiles={
  textureTriplet:profile([2],[2],[1.5]),
  texturePentatonic:profile([1.5,2],[1.5,2],[1.5,2]),
 };
+const anchors={
+ pianoWhole:[[0],[0],[0]],pianoHalf:[[0,2],[0,2],[0,1.5]],pianoQuarter:[[1,3],[1,2],[1,2]],
+ pianoBassReply:[[.5,2.5],[.5,2],[.5,2]],pianoBackbeat:[[1,3],[1,2],[.5,2]],pianoPush:[[1.5,3.5],[.5,2.5],[1,2.5]],
+ pianoBallad:[[0,2.5],[0,2.5],[0,2]],pianoBroken:[[2,2.5],[1,1.5],[.5,1]],pianoAnswer:[[0,2],[0,2],[0,2]],
+ pianoHandTurn:[[1,1.75,3,3.75],[1,2.5],[.5,2.5]],pianoKpop:[[.75,2.75],[.5,2.5],[1,2.5]],pianoJpop:[[1,3],[1,2],[1,2]],
+ popWhole:[[0],[0],[0]],popHalf:[[0,2],[0,2],[0,1.5]],popQuarter:[[1,3],[1,2],[1,2]],
+ popBackbeat:[[1,3],[1,2],[.5,2]],popPush:[[1.5,3],[.5,2.5],[1,2.5]],popBassChord:[[.5,2.5],[.5,2],[.5,2]],
+ popSplit:[[1,3],[1,2.5],[.5,2.5]],popEighth:[[0,1,2,3],[0,1,2],[0,1.5]],popBallad:[[0,2],[0,2.5],[0,2]],
+ popAnswer:[[0,1.5],[0,2.5],[0,2.5]],popLift:[[0,2,3.5],[0,1.5],[0,1.5,2.5]],popCadence:[[0,2.5],[0,2.5],[0,2.5]],
+ textureDotted:[[1,1.75,3,3.75],[0,.75,2,2.75],[0,.75,1.5,2.25]],textureTied:[[1.75],[.75],[.5]],
+ textureSpace:[[0,3,3.5],[0,2.5],[0,2]],textureBroken:[[1,1.5],[1,1.5],[.5,1]],
+ textureTriplet:[[3,3+1/3,3+2/3],[2,2+1/3,2+2/3],[1.5,2,2.5]],texturePentatonic:[[2.5,3],[1.5,1.75],[1,1.25]]
+};
+for(const [id,[four,three,compound]] of Object.entries(anchors))phraseProfiles[id].anchors={four,three,compound};
+export function sparseVoices(group,chord){
+ if(group.length<2)return group;
+ const third=Number.isInteger(chord?.root)?group.find(n=>[3,4].includes(mod(n.note-chord.root))):null;
+ return [...new Set([third??group[0],group.at(-1)])];
+}
 export const phraseModes=['original','space','two','four','auto'];
 export const normalizePhraseMode=value=>phraseModes.includes(value)?value:'original';
 const mod=n=>((n%12)+12)%12;
@@ -66,11 +86,15 @@ export function textureGrid(pattern,barBeats=4,meter={numerator:4,denominator:4}
    if(pattern==='textureSpace')return [[0,.65,'block'],[2,.4,'high']];
    if(pattern==='textureTied')return [[0,.5,'block'],[.5,1.5,'block'],[2.5,.5,'high']];
    if(pattern==='textureDotted')return [[0,.75,'block'],[.75,.25,'low'],[1,.5,'high'],[1.5,.75,'block'],[2.25,.25,'low'],[2.5,.5,'high']];
+   if(pattern==='textureTriplet')return [[0,1.1,'block'],[1.5,.4,'low'],[2,.4,'high'],[2.5,.4,'low']];
+   if(pattern==='texturePentatonic')return [[0,.8,'block'],[1,.22,'pent1'],[1.25,.22,'pent2'],[2,.7,'block']];
    return [[0,.5,'block'],[.5,.5,'low'],[1,.5,'high'],[1.5,.5,'block'],[2,.5,'low'],[2.5,.5,'high']];
   }
   if(pattern==='textureSpace')return [[0,.8,'block'],[2.5,.45,'high']];
   if(pattern==='textureTied')return [[0,.75,'block'],[.75,1.25,'block'],[2,.8,'high']];
   if(pattern==='textureDotted')return [[0,.75,'block'],[.75,.25,'low'],[1,.8,'block'],[2,.75,'high'],[2.75,.25,'low']];
+  if(pattern==='textureTriplet')return [[0,1.8,'block'],[2,.27,'low'],[2+1/3,.27,'high'],[2+2/3,.27,'low']];
+  if(pattern==='texturePentatonic')return [[0,.8,'block'],[1.5,.22,'pent1'],[1.75,.22,'pent2'],[2.5,.4,'high']];
   return [[0,.8,'block'],[1,.45,'low'],[1.5,.45,'high'],[2,.8,'block']];
  }
  // This library explicitly supports 4/4, 3/4 and 6/8. Other meters get a sparse
@@ -81,14 +105,33 @@ export function textureGrid(pattern,barBeats=4,meter={numerator:4,denominator:4}
   case 'textureTied':return [[0,.8,'block'],[1,.75,'low'],[1.75,1.25,'block'],[3,.5,'low'],[3.5,.5,'high']];
   case 'textureSpace':return [[0,.85,'block'],[3,.45,'low'],[3.5,.45,'high']];
   case 'textureBroken':return [[0,.9,'block'],[1,.5,'low'],[1.5,.5,'high'],[2,.75,'block'],[2.75,.25,'low'],[3,.5,'high'],[3.5,.5,'low']];
-  case 'textureTriplet':return [[0,1.8,'block'],[2,.8,'block']];
-  case 'texturePentatonic':return [[0,1.3,'block'],[1.5,.4,'high'],[2,1,'block']];
+  case 'textureTriplet':return [[0,1.8,'block'],[2,.8,'block'],[3,.27,'low'],[3+1/3,.27,'high'],[3+2/3,.27,'low']];
+  case 'texturePentatonic':return [[0,1.3,'block'],[1.5,.4,'high'],[2,.4,'block'],[2.5,.38,'pent1'],[3,.45,'pent2']];
   default:return [];
  }
 }
 
+export function pentatonicRun(landing,key,descending=false,count=4){
+ const root=typeof key==='number'?key:key?.root,mode=key?.mode;
+ if(!Number.isInteger(root)||!['major','minor'].includes(mode))return [];
+ const pcs=(mode==='minor'?[0,3,5,7,10]:[0,2,4,7,9]).map(n=>mod(n+root));
+ const pool=Array.from({length:88},(_,i)=>21+i).filter(n=>pcs.includes(mod(n))),index=pool.indexOf(landing);
+ if(index<0)return [];
+ const run=descending?pool.slice(index,index+count).reverse():pool.slice(Math.max(0,index-count+1),index+1);
+ return run.length===count?run:[];
+}
+function pentatonicBody(chord,key){
+ const root=typeof key==='number'?key:key?.root,mode=key?.mode;
+ if(!Number.isInteger(root)||!['major','minor'].includes(mode))return [];
+ const scale=(mode==='minor'?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]).map(n=>mod(n+root));
+ if(chord.notes.some(n=>!scale.includes(mod(n))))return [];
+ for(const target of [...chord.notes.slice(1)].reverse()){const run=pentatonicRun(target,key,false,2);if(run.length)return run;}
+ return [];
+}
+
 /** All notes use {pitch,start,end}; product adapters translate their own formats. */
 export function renderTexture(plan,pattern,options={}){
+ if(options.pianoRevision===1)return renderLegacyTexture(plan,pattern,options);
  if(!isTexture(pattern)||!plan.length)return [];
  const bb=Number(options.barBeats)||4,meter=options.meter||{numerator:4,denominator:4};
  const melody=options.melody||[],gate=clamp(Number(options.gate??.82),.1,1),human=clamp(Number(options.human??.25),0,1);
@@ -108,13 +151,14 @@ export function renderTexture(plan,pattern,options={}){
   const finish=Math.min(bar+bb,end),compound=meter.denominator===8&&bb===3,pulse=compound?1.5:1;
   const active=melody.filter(n=>overlap(n,bar,finish));
   const busy=active.filter(n=>n.start>=bar-epsilon).length>=Math.max(4,bb*1.5);
-  const bassHits=bb===4?[0,2]:compound?[0,1.5]:bb===3?[0,2]:[0];
+  const bassHits=bb===4?[0,2]:compound?[0,1.5]:[0];
   for(const local of bassHits){const chord=chordAt(bar+local);if(chord)emit(bar+local,[chord.notes[0]],Math.min(pattern==='textureSpace'?.8:1.5,finish-bar-local),.6,'bass');}
   for(const [local,duration,selection] of textureGrid(pattern,bb,meter)){
    const beat=bar+local,chord=chordAt(beat);if(!chord)continue;
    if(busy&&Math.abs(local/pulse-Math.round(local/pulse))>.01)continue;
    const upper=[...new Set(chord.notes.slice(1))];
-   const pitches=selection==='low'?upper.slice(0,1):selection==='high'?upper.slice(-1):upper.slice(0,busy?3:4);
+   const motif=selection.startsWith('pent')?pentatonicBody(chord,options.key):[];
+   const pitches=selection==='low'?upper.slice(0,1):selection==='high'?upper.slice(-1):selection.startsWith('pent')?[motif[selection==='pent1'?0:1]??upper[selection==='pent1'?0:upper.length-1]]:upper.slice(0,busy?3:4);
    emit(beat,pitches,duration,busy?.46:selection==='block'?.58:.49,'chords',duration>pulse?'tied':'texture');
   }
   // A split chord is an arrival, not a restarted rhythm template. Silence/N.C.
@@ -148,21 +192,17 @@ export function renderTexture(plan,pattern,options={}){
    const neighbor=[landing+(descending?-1:1),landing+(descending?-2:2)].find(n=>n>=21&&n<=108&&scale.includes(mod(n))&&!chordPCs.includes(mod(n)));
    pitches=neighbor===undefined?[upper[0],upper.at(-1),landing]:[landing,neighbor,landing];
   }else if(pattern==='texturePentatonic'&&scaleCompatible){
-   const pent=(mode==='minor'?[0,3,5,7,10]:[0,2,4,7,9]).map(n=>mod(n+root));
-   const pool=Array.from({length:13},(_,i)=>landing-6+i).filter(n=>n>=21&&n<=108&&pent.includes(mod(n)));
-   const destinations=upper.filter(n=>pent.includes(mod(n)));
-   if(pool.length>=3&&destinations.length){
-    const last=[...destinations].sort((a,b)=>Math.abs(a-target)-Math.abs(b-target)||a-b)[0];
-    const ordered=descending?[...pool].reverse():pool;
-    pitches=[...ordered.filter(n=>n!==last).slice(0,3),last];
-   }
+   const destinations=upper.filter(n=>pentatonicRun(n,key,descending).length);
+   const last=destinations.sort((a,b)=>Math.abs(a-target)-Math.abs(b-target)||a-b)[0];
+   if(last!==undefined)pitches=pentatonicRun(last,key,descending);
+
   }
   if(!pitches){const ordered=descending?[...upper].reverse():upper;pitches=[ordered[0],ordered[1%ordered.length],ordered.at(-1),landing];}
   const slots=Math.floor((pulse+epsilon)/step);pitches=pitches.slice(-slots);
   const fillStart=finish-pitches.length*step;
   // Remove only upper-hand material replaced by the fill; bass and chord chart
   // remain unchanged. Shorten old upper sustains before any non-chord neighbor.
-  for(const n of out)if(n.role==='chords'&&n.beat<finish&&n.beat+n.duration>fillStart){
+  for(const n of out)if(n.role==='chords'&&!['held','tied'].includes(n.articulation)&&n.beat<finish&&n.beat+n.duration>fillStart){
    if(n.beat>=fillStart-epsilon)n.duration=0;else n.duration=fillStart-n.beat;
   }
   pitches.forEach((pitch,i)=>emit(fillStart+i*step,[pitch],step*.84,.43,'chords','fill'));
@@ -180,9 +220,23 @@ export function renderTexture(plan,pattern,options={}){
  return merged.filter(n=>n.duration>epsilon);
 }
 
+// Density is local onset activity, never the occupancy of an entire sung bar.
+export function melodyBusyAt(melody,beat){
+ const start=Math.floor(beat+epsilon);
+ return melody.filter(n=>n.start>=start-epsilon&&n.start<start+1-epsilon).length>=2;
+}
+export function phraseReplyAllowed(melody,beat,duration){
+ if(melodyBusyAt(melody,beat))return false;
+ const sounding=melody.filter(m=>overlap(m,beat,beat+duration));
+ // A settled long tone may support a chord-tone reply; a new syllable may not.
+ if(sounding.length)return sounding.every(m=>m.start<=beat-.75+epsilon&&m.end-m.start>=1.5&&m.end>=beat+duration-epsilon)&&!melody.some(m=>m.start>beat-epsilon&&m.start<beat+.75-epsilon);
+ return !melody.some(m=>overlap(m,beat,beat+.75));
+}
+
 /** Preserve the original event list unless explicitly enabled. Product adapters
  * run their final melody protection AFTER this optional phrase arrangement. */
 export function applyPianoPhrase(events,plan,pattern,options={}){
+ if(options.pianoRevision===1)return applyLegacyPhrase(events,plan,pattern,options);
  const mode=normalizePhraseMode(options.pianoPhrase),cfg=phraseProfiles[pattern];
  if(mode==='original'||!cfg||!plan.length)return events;
  const bb=Number(options.barBeats)||4,compound=bb===3&&options.meter?.denominator===8;
@@ -193,47 +247,52 @@ export function applyPianoPhrase(events,plan,pattern,options={}){
  const output=[];
  for(let bar=Math.floor(Math.min(0,plan[0].beat)/bb)*bb;bar<end-epsilon;bar+=bb){
   const finish=Math.min(bar+bb,end),index=Math.round(bar/bb),phase=((index%4)+4)%4;
-  const active=melody.filter(n=>overlap(n,bar,finish));
-  const occupied=active.reduce((sum,n)=>sum+Math.max(0,Math.min(n.end,finish)-Math.max(n.start,bar)),0);
-  const busy=active.filter(n=>n.start>=bar-epsilon).length>=Math.max(4,bb*1.5)||occupied>bb*.65;
-  const form=busy||mode==='space'?'space':mode==='two'?(phase%2?'answer':'space'):['space','normal','lift','answer'][phase];
+  const form=mode==='space'?'space':mode==='two'?(phase%2?'answer':'normal'):['normal','space','lift','answer'][phase];
   const notes=events.filter(n=>n.beat>=bar-epsilon&&n.beat<finish-epsilon);
   const upper=notes.filter(n=>!isBass(n)&&!isFill(n)).sort((a,b)=>a.beat-b.beat||a.note-b.note);
   const groups=[];
-  for(const n of upper){const previous=groups.at(-1);if(previous&&n.beat-previous[0].beat<.02)previous.push(n);else groups.push([n]);}
+  for(const n of upper){const previous=groups.at(-1);if(previous&&(n.phraseAttack??n.beat)-(previous[0].phraseAttack??previous[0].beat)<.02)previous.push(n);else groups.push([n]);}
   let selected=notes.filter(isBass).map(n=>({...n}));
   // In variations even old POP fills yield to sustained/new melody notes.
-  selected.push(...notes.filter(n=>isFill(n)&&!busy&&!melody.some(m=>overlap(m,n.beat,n.beat+n.duration))).map(n=>({...n})));
+  selected.push(...notes.filter(n=>isFill(n)&&!melodyBusyAt(melody,n.beat)&&!melody.some(m=>overlap(m,n.beat,n.beat+n.duration))).map(n=>({...n})));
   groups.forEach((group,i)=>{
    group.sort((a,b)=>a.note-b.note);
    const chord=chordAt(group[0].beat),arrival=chord&&Math.abs(group[0].beat-chord.beat)<.02;
-   const tied=group.some(n=>n.articulation==='tied');
-   if(form==='space'&&i%2&&!arrival&&!tied)return;
+   const tied=group.some(n=>['tied','held'].includes(n.articulation));
+   const anchor=(cfg.anchors[bb===3?(compound?'compound':'three'):'four']||[]).some(at=>Math.abs(group[0].beat-bar-at)<.06);
+   const localForm=melodyBusyAt(melody,group[0].beat)?'space':form;
+   if(localForm==='space'&&i%2&&!arrival&&!tied&&!anchor)return;
+   if(mode==='two'&&localForm==='answer'&&!anchor&&!arrival&&!tied)return;
    let voices=group;
-   if(form==='space')voices=group.slice(0,2);
-   if(form==='answer')voices=i%2?[group.at(-1)]:group.slice(0,2);
-   if(form==='lift'&&i%2)voices=group.slice(-2);
-   selected.push(...voices.map(n=>({...n,velocity:n.velocity*(form==='space'?.88:form==='answer'?.94:1)})));
+   if(localForm==='space')voices=sparseVoices(group,chord);
+   if(localForm==='answer')voices=mode==='two'?[group.at(-1)]:group;
+   // The four-bar lift and final answer retain the full harmonic voicing.
+   selected.push(...voices.map(n=>({...n,velocity:n.velocity*(localForm==='space'?.88:localForm==='answer'?.94:1)})));
   });
   // Sparse patterns retain their rests; ties retain one attack. Reply slots are
   // authored per pattern/meter, never a random density multiplier or swing shift.
-  if(!busy&&['answer','lift'].includes(form)&&finish>=bar+bb-epsilon){
-   const slots=bb===4?cfg.four:bb===3?(compound?cfg.compound:cfg.three):[];
+  if(['answer','lift'].includes(form)&&finish>=bar+bb-epsilon){
+   const slots=form==='lift'&&pattern==='textureTriplet'?(bb===4?[2,2+1/3,2+2/3]:compound?[1.5,2,2.5]:[2,2+1/3,2+2/3]):bb===4?cfg.four:bb===3?(compound?cfg.compound:cfg.three):[];
    for(const [i,local] of slots.entries()){
     const beat=bar+local,chord=chordAt(beat);if(!chord)continue;
     const duration=Math.min(.36*(options.gate??.82),chord.beat+chord.beats-beat,finish-beat);
-    if(duration<.06||melody.some(m=>overlap(m,beat,Math.min(finish,beat+.6))))continue;
-    // Never overwrite a fill, squeeze an answer through a chord change, or
-    // re-strike a tied voice while its authored tie is still sounding.
-    if(notes.some(n=>!isBass(n)&&(isFill(n)||n.articulation==='tied')&&n.beat<beat+duration&&n.beat+n.duration>beat+epsilon))continue;
+    if(duration<.06||!phraseReplyAllowed(melody,beat,duration))continue;
+    // A reply can sit over held harmony. Never re-strike its held pitch.
+    if(notes.some(n=>!isBass(n)&&isFill(n)&&overlap({start:n.beat,end:n.beat+n.duration},beat,beat+duration)))continue;
     const upper=[...new Set(chord.notes.slice(1))].sort((a,b)=>a-b);if(!upper.length)continue;
+    const sustained=selected.filter(n=>['held','tied'].includes(n.articulation)&&n.beat<beat&&n.beat+n.duration>beat+epsilon);
     const reverse=(Math.floor(index/4)+(options.seed??42))%2===1;
-    const pitch=(i+(reverse?1:0))%2?upper.at(-1):upper[0];
-    selected=selected.filter(n=>isBass(n)||isFill(n)||Math.abs(n.beat-beat)>=.02);
-    for(const n of selected)if(!isBass(n)&&n.beat<beat&&n.beat+n.duration>beat)n.duration=beat-n.beat;
-    const sample=upper.length&&events.find(n=>!isBass(n));
-    selected.push({beat,note:pitch,duration,velocity:form==='lift'?.53:.47,articulation:'phrase',fill:false,
+    let pitch=(i+(reverse?1:0))%2?upper.at(-1):upper[0];
+    while(sustained.some(n=>n.note===pitch)&&pitch+12<=96)pitch+=12;
+    if(sustained.some(n=>n.note===pitch))continue;
+    if(mode==='two')selected=selected.filter(n=>isBass(n)||isFill(n)||['held','tied'].includes(n.articulation)||Math.abs(n.beat-beat)>=.02);
+    for(const n of selected)if(!isBass(n)&&!['held','tied'].includes(n.articulation)&&n.beat<beat&&n.beat+n.duration>beat)n.duration=beat-n.beat;
+    const sample=events.find(n=>!isBass(n));
+    let random=(Math.imul((options.seed??42)^(index*131+i*17),1664525)+1013904223)>>>0;
+    const velocity=clamp((form==='lift'?.53:.47)+[0,-.025,.015,-.045][phase]+(random/4294967296-.5)*.06*clamp(Number(options.human??.25),0,1),.25,.86);
+    selected.push({beat,note:pitch,duration,velocity,articulation:'phrase',fill:false,
      ...(sample&&'part' in sample?{part:'upper'}:{}),...(sample&&'role' in sample?{role:'chords'}:{})});
+
    }
   }
   output.push(...selected);
