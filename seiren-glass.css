@@ -1,0 +1,52 @@
+/* The existing sculpture, serif wordmark and sea-green ink remain the artwork.
+   Thin translucent surfaces replace stacked ivory slabs. */
+body.seiren{--panel:rgba(248,247,235,.38);--field:rgba(255,254,245,.38);--glass:rgba(248,247,235,.6);--line:rgba(66,89,75,.23);--muted:#3e5549;--paper:#233d32}
+body.seiren header{background:rgba(247,247,234,.22);border-color:#ffffff5e;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:inset 0 1px #ffffffe0;}
+body.seiren .seiren-topbar,body.seiren .seiren-stylebar{background:rgba(248,247,235,.3);border-color:#ffffff61;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+body.seiren .seiren-editor,body.seiren .seiren-inspector,body.seiren .seiren-controls-panel,body.seiren #melodyWorkspace>.seiren-empty{background:var(--panel);border:1px solid #ffffff75;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:inset 0 1px #ffffff9e,0 8px 24px #2941360c;border-radius:8px}
+body.seiren .seiren-controls-panel>.panel{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+body.seiren #melodyWorkspace>.score{background:var(--glass);border:1px solid #ffffff9c;border-bottom-color:#7c8e7660;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 18px #263e3210;border-radius:7px}
+body.seiren .seiren-notices:not(:empty){background:rgba(249,248,238,.42);border-color:#ffffff70;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+body.seiren .melody-audition{background:rgba(255,254,244,.2);border:1px solid #ffffff55;border-radius:6px}
+body.seiren .seiren-transport{background:rgba(248,247,235,.72);border-color:#ffffffaa;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 -4px 24px #243c3012}
+body.seiren .melody-roll-scroll{background:rgba(255,254,245,.2);border-color:#60776044;border-radius:4px}
+body.seiren .roll-ruler rect{fill:#f4f3e5bb}
+body.seiren .seiren-pattern-help,body.seiren .seiren-phrase-help,body.seiren .audition-help,body.seiren .workflow-route,body.seiren .melody-score-tools,body.seiren .seiren-legend{color:#3c5346}
+body.seiren .seiren-inspector h2{font-size:14px;letter-spacing:.04em}
+body.seiren .roll-tools [data-roll-tool=downbeat]{width:auto;flex:0 0 auto;min-width:44px}
+body.seiren select option,body.seiren select optgroup{background:#f1f2e6;color:#233d32}
+/* Menus need their own reading surface when they float over other controls. */
+body.seiren [popover],body.seiren dialog,body.seiren .demo-menu>div,body.seiren .seiren-chord-actions[open] .score-actions{background:rgba(246,247,235,.96);color:#233d32;border-color:#80928180;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 48px #1e382733}
+body.seiren [popover] p,body.seiren dialog p{color:#3e5549}
+body.seiren .language-switch{display:flex;flex-shrink:0;gap:2px;padding:3px;border:1px solid #6c826747;border-radius:7px;background:#f8f8ee24}
+body.seiren .language-switch button{min-width:38px!important;min-height:36px!important;padding:5px 7px!important;background:transparent!important;border:0!important;border-radius:4px!important;color:#304b3d!important;font-size:12px!important}
+body.seiren .language-switch button[aria-pressed=true],body.seiren .language-switch button[aria-pressed=true]:hover{background:#466a5ce6!important;color:#fffdf3!important;box-shadow:0 1px 4px #223d3024!important}
+body.seiren .language-switch button::before{content:none!important}
+html[lang=en] body.seiren .workflow-route{font-size:10px;letter-spacing:0}
+html[lang=en] body.seiren .melody-audition select{max-width:100%}
+@media(max-width:600px){
+ body.seiren header{flex-wrap:wrap;height:auto;min-height:80px;padding:8px 10px;gap:6px}
+ body.seiren .seiren-header-actions{gap:5px}
+ body.seiren .language-switch{padding:2px;gap:0}
+ body.seiren .language-switch button{width:40px!important;min-width:40px!important;min-height:44px!important;font-size:11px!important}
+ body.seiren .brand{font-size:17px;letter-spacing:3px;gap:8px}
+ body.seiren .brand img{width:30px;height:42px}
+ body.seiren .studio-title{left:48px;bottom:5px;font-size:9px}
+ body.seiren .seiren-header-actions button,body.seiren .seiren-header-actions .file-button{width:44px;min-width:44px!important}
+ body.seiren .seiren-header-actions>.ghost{width:28px;min-width:28px!important}
+ body.seiren .seiren-editor,body.seiren .seiren-inspector{background:rgba(248,247,235,.46)}
+ body.seiren #melodyWorkspace>.score{background:rgba(248,247,235,.7)}
+ body.seiren .melody-audition .audition-source select{min-width:0;width:100%}
+ body.seiren .harmony-versions select{max-width:min(240px,calc(100vw - 65px))}
+}
+@media(max-width:420px){
+ body.seiren header{padding-inline:8px;gap:4px}
+ body.seiren .brand{font-size:15px;letter-spacing:2px;gap:7px}
+ body.seiren .brand img{width:26px}
+ body.seiren .studio-title{left:42px}
+ body.seiren .seiren-header-actions{gap:4px}
+}
+@media(prefers-reduced-transparency:reduce){
+ body.seiren{--panel:#f4f3e9;--field:#faf9f0;--glass:#f4f3e9}
+ body.seiren header,body.seiren .seiren-topbar,body.seiren .seiren-stylebar,body.seiren .seiren-editor,body.seiren .seiren-inspector,body.seiren .seiren-notices:not(:empty),body.seiren #melodyWorkspace>.score,body.seiren .seiren-transport,body.seiren .melody-audition{background:#f4f3e9;backdrop-filter:none;-webkit-backdrop-filter:none}
+}

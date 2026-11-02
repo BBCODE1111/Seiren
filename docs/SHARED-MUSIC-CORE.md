@@ -1,6 +1,6 @@
 # Khimaira / Seiren 共用樂理維護
 
-共用核心版本：1.0.0。此次只搬移基礎樂理，保留兩個產品原本的音樂輸出與相容差異。
+共用核心版本：1.1.1。此次只搬移基礎樂理，保留兩個產品原本的音樂輸出與相容差異。
 
 ## 單一來源與發布
 
@@ -79,3 +79,7 @@ node scripts/verify-shared-music-browser.cjs ../Seiren /tmp/chord-core-browser
 2026-10-27 樂句擴充：piano-motion 升至 1.1.0，music-core 仍為 1.0.0。兩邊各保留 18 款、統一 POP／TEXTURE 顯示，新增三種樂句；舊工作階段／專案回到 original。詳見 `docs/piano-phrases-20261027.md`。
 
 2026-10-27 嚴格審查修正：piano-motion 2.0.0；music-core 不變。舊專案以 pianoRevision 1 保存原型與樂句，新工作階段使用修正後本體。新規則、依據、相容性決策與驗收詳見 `docs/piano-audit-20261027.md`。
+
+2026-10-28：music-core 1.1.0 新增 `analyzeHarmony` 與 `tritoneRoot`，由 KHIMAIRA 的判定器、級數標記與三全音代理共用。原解析／移調／演奏契約未改；SEIREN 僅同步核心，不採用新判定策略。修改調性判定、級數、GENERATE 前必讀 `docs/key-detection-theory.md`（KHIMAIRA 儲存庫）。
+
+2026-10-28：1.1.1 在同一功能分析新增未解決 ii–V／V 的 impliedTonic 證據；不把隱含主音當成實際終止。既有解析／拼字相容契約不變。

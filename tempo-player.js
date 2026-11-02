@@ -1,3 +1,5 @@
+// Repeated MIDI tempo markers do not imply a changing musical tempo.
+export const hasTempoChanges=map=>Array.isArray(map)&&map.length>1&&map.some(t=>Math.abs(t.bpm-map[0].bpm)>.001);
 export const validTempo=value=>Number.isFinite(Number(value))&&Number(value)>=30&&Number(value)<=260;
 export const clampTempo=(value,fallback=92)=>validTempo(value)?Number(value):fallback;
 

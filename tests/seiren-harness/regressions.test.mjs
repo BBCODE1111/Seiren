@@ -78,3 +78,11 @@ test('non-loop downbeat phase preserves the preceding pickup', () => {
   assert.equal(result.downbeatTime, .5);
   assert.equal(result.pickupBeats, 1);
 });
+
+
+import {hasTempoChanges} from '../../tempo-player.js';
+test('pickup MIDI duplicate tempo markers remain editable as a fixed tempo',()=>{
+ assert.equal(hasTempoChanges([{beat:-1,bpm:90},{beat:0,bpm:90}]),false);
+ assert.equal(hasTempoChanges([{beat:-1,bpm:90},{beat:0,bpm:120}]),true);
+ assert.equal(hasTempoChanges([{beat:0,bpm:90}]),false);
+});

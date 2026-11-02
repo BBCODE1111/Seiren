@@ -1,3 +1,5 @@
+import {OriginalAudioStretch} from './audio-stretch-client.js?v=seiren-web-20261103';
+import {stretchRatio} from './audio-stretch.js?v=seiren-web-20261103';
 import {playMelodyTone} from './melody-synth.js?v=seiren-pop-1';
 import {beatToSeconds,secondsToBeat,tempoAt} from './midi.js?v=piano-audit-1';
 import {Piano} from './piano.js?v=seiren-pop-1';
@@ -13,7 +15,7 @@ export function cycleTiming({startBeat=0,loopStartBeat=Math.max(0,startBeat),tot
   origin:cycle=>cycle===0?0:firstSeconds+(cycle-1)*cycleSeconds};
 }
 export class MelodyPlayer {
- constructor(){this.context=null;this.playing=false;this.generation=0;this.voices=new Set();this.sources=new Set();this.timer=null;}
+ constructor(){this.stretcher=new OriginalAudioStretch();this.context=null;this.playing=false;this.generation=0;this.voices=new Set();this.sources=new Set();this.timer=null;}
  async unlock(){this.context ||=new (window.AudioContext||window.webkitAudioContext)();await this.context.resume();this.piano ||=new Piano(this.context);await this.piano.load();this.melodyBus ||=this.context.createGain();if(!this.connected){this.melodyBus.connect(this.piano.mixInput||this.context.destination);this.connected=true;}return this.context;}
  setMix(melody=.35,harmony=1){if(this.melodyBus)this.melodyBus.gain.setTargetAtTime(melody,this.context.currentTime,.015);if(this.piano)this.piano.master.gain.setTargetAtTime(.68*harmony,this.context.currentTime,.015);}
  setLoop(enabled){
@@ -29,10 +31,11 @@ export class MelodyPlayer {
   for(const source of this.sources)if(source.cycle>=this.stopCycle||!enabled&&source.pickup){try{source.stop();}catch{}}
  }
  tone(note,when,duration){return playMelodyTone(this.context,this.melodyBus,this.voices,note,when,duration,this.instrument);}
- async play({melody,accompaniment,tempoMap,totalBeats,sourceBuffer=null,offset=0,downbeatTime=offset,mode='notes',instrument='warm',harmonyInstrument='piano',bassInstrument='piano',melodyGain=.35,harmonyGain=1,startBeat=0,loopStartBeat=Math.max(0,startBeat),pickupBeats=0,repeatPickup=true,loop=false,countIn=false,metronome=false,meter={numerator:4,denominator:4},onTick=()=>{},onStop=()=>{}}){
+ async play({melody,accompaniment,tempoMap,totalBeats,sourceBuffer=null,sourceBpm=null,followRecording=false,onProgress=()=>{},offset=0,downbeatTime=offset,mode='notes',instrument='warm',harmonyInstrument='piano',bassInstrument='piano',melodyGain=.35,harmonyGain=1,startBeat=0,loopStartBeat=Math.max(0,startBeat),pickupBeats=0,repeatPickup=true,loop=false,countIn=false,metronome=false,meter={numerator:4,denominator:4},onTick=()=>{},onStop=()=>{}}){
   validatePickup(pickupBeats,meter);
   if(!Number.isFinite(downbeatTime)||startBeat< -pickupBeats-1e-7||loopStartBeat<0)throw Error('Invalid downbeat or pickup start.');
   this.stop();const generation=this.generation;await this.unlock();if(generation!==this.generation)return false;
+  if(mode==='original'&&sourceBuffer&&!followRecording&&sourceBpm){const ratio=stretchRatio(tempoAt(0,tempoMap),sourceBpm);sourceBuffer=await this.stretcher.prepare(sourceBuffer,ratio,this.context,onProgress);if(generation!==this.generation)return false;downbeatTime/=ratio;}
   this.timing=cycleTiming({startBeat,loopStartBeat,totalBeats,tempoMap});
   this.cycleSeconds=this.timing.cycleSeconds;
   this.instrument=instrument;this.setMix(melodyGain,harmonyGain);this.onStop=onStop;this.origin=this.context.currentTime+.06;this.loop=loop;this.stopCycle=loop?Infinity:1;
@@ -90,5 +93,5 @@ export class MelodyPlayer {
   };
   this.pump=pump;this.timer=setInterval(pump,25);pump();return true;
  }
- stop(){this.generation++;clearInterval(this.timer);this.timer=null;for(const s of [...this.voices,...this.sources])try{s.stop();}catch{}this.voices.clear();this.sources.clear();this.piano?.stop();const was=this.playing;this.playing=false;if(was)this.onStop?.();}
+ stop(){this.generation++;this.stretcher.cancel();clearInterval(this.timer);this.timer=null;for(const s of [...this.voices,...this.sources])try{s.stop();}catch{}this.voices.clear();this.sources.clear();this.piano?.stop();const was=this.playing;this.playing=false;if(was)this.onStop?.();}
 }

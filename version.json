@@ -1,0 +1,13 @@
+{
+  "product": "SEIREN Web",
+  "version": "1.0.0",
+  "channel": "preview",
+  "date": "2026-11-03",
+  "tag": "web-v1.0.0",
+  "features": [
+    "melody-workflow",
+    "pitch-preserving-tempo",
+    "glass-ui",
+    "zh-TW/en"
+  ]
+}

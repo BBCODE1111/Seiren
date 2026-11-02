@@ -1,5 +1,5 @@
 // Product adapter: generation, voicing and MIDI remain owned by this app.
-import {names,mod,createTheory} from './music-core.js?v=1.0.0';
+import {names,mod,createTheory} from './music-core.js?v=1.1.1';
 const {parse,chordTones,pitchName,spellChord}=createTheory('seiren-v1');
 export {names,mod,parse,chordTones,pitchName,spellChord};
 const recipes={Jazz:[[0,'maj7'],[9,'7'],[2,'m7'],[7,'7'],[4,'m7'],[9,'7'],[2,'m9'],[7,'13']],Gospel:[[0,'maj9'],[4,'m7'],[5,'maj7'],[5,'m6'],[0,'maj7'],[9,'7'],[2,'m7'],[7,'7sus4']],Fusion:[[0,'maj9'],[3,'maj7'],[5,'maj9'],[8,'maj7'],[2,'m9'],[1,'7'],[0,'maj9'],[7,'7#9']],'Bossa nova':[[0,'maj7'],[9,'7b9'],[2,'m9'],[7,'13'],[4,'m7'],[3,'dim7'],[2,'m7'],[7,'7']],Rock:[[0,''],[7,''],[9,'m'],[5,''],[0,''],[10,''],[5,''],[7,'']],'Japanese rock':[[5,'maj7'],[7,''],[4,'m7'],[9,'m7'],[5,''],[7,''],[0,''],[4,'7']],House:[[9,'m7'],[5,'maj7'],[0,'maj7'],[7,''],[9,'m9'],[5,'maj9'],[2,'m7'],[7,'7']],Classical:[[0,''],[5,''],[2,'m'],[7,'7'],[0,''],[9,'m'],[2,'m'],[7,'7']],'Phrygian dominant':[[0,''],[1,''],[0,''],[10,'m'],[0,''],[5,'m'],[1,''],[0,'']],'Dorian folk':[[0,'m'],[5,''],[0,'m'],[10,''],[0,'m7'],[5,''],[7,'m'],[0,'m']]};

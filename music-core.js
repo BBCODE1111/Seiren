@@ -1,10 +1,10 @@
 // Generated from Khimaira/packages/music-core/core.js; edit the canonical source and sync.
 /**
- * Shared music theory 1.0.0. Canonical source; generated deployment copies are
+ * Shared music theory 1.1.1. Canonical source; generated deployment copies are
  * checked by scripts/sync-music-core.mjs. No UI, playback or generation imports.
  * Profiles preserve the two apps' existing contracts, including known differences.
  */
-export const MUSIC_CORE_VERSION = '1.0.0';
+export const MUSIC_CORE_VERSION = '1.1.1';
 export const names=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
 export const mod=n=>((n%12)+12)%12;
 const pc=s=>mod(({C:0,D:2,E:4,F:5,G:7,A:9,B:11})[s[0]]+[...s.slice(1)].reduce((n,a)=>n+(a==='#'?1:a==='b'?-1:0),0));
@@ -122,7 +122,89 @@ export function createTheory(profile) {
    return (major===6?['C','C#','D','D#','E','E#','F#','G','G#','A','A#','B']:sharp?['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']:names)[mod(pitch)]+(octave?Math.floor(pitch/12)-1:'');
   }
 
+  // Shared candidate-relative analysis. Consumers use these exact roles for
+  // both key evidence and Roman labels; no generation or transposition occurs.
+  function analyzeHarmony(bars,key={root:0,mode:'major'},{loop=true}={}){
+   const root=mod(key.root||0),mode=key.mode||'major',tonic=key.tonic||keyName(root,mode),major=mode!=='minor';
+   const expected=major?{0:'M',2:'m',4:'m',5:'M',7:'M',9:'m',11:'d'}:{0:'m',2:'d',3:'M',5:'m',7:'m',8:'M',10:'M'};
+   const quality=c=>c.intervals.includes(3)&&c.intervals.includes(6)?'d':c.minor?'m':c.intervals.includes(4)?'M':'open';
+   const seventh=c=>c.intervals.includes(10)&&!c.minor;
+   const dominant=c=>!c.intervals.includes(11)&&(quality(c)==='M'||quality(c)==='open'&&(seventh(c)||c.q.includes('sus')));
+   const baseRoman=c=>{
+    const degree=(letters.indexOf(c.rootName[0])-letters.indexOf(tonic[0])+7)%7;
+    let a=mod(c.root-root-[0,2,4,5,7,9,11][degree]);if(a>6)a-=12;
+    let numeral=['I','II','III','IV','V','VI','VII'][degree],q=c.q;
+    if(q==='m7b5'){numeral=numeral.toLowerCase();q='ø7';}
+    else if(q.startsWith('dim')){numeral=numeral.toLowerCase();q=q==='dim7'?'°7':'°';}
+    else if(q.startsWith('m')&&!q.startsWith('maj')){numeral=numeral.toLowerCase();q=q.startsWith('mMaj')?'maj'+q.slice(4):q.slice(1);}
+    return (a>0?'#'.repeat(a):'b'.repeat(-a))+numeral+q;
+   };
+   const events=bars.flatMap((b,bar)=>(b.chords||[]).map((c,chord)=>{
+    const p=parse(c.symbol);if(!p)throw Error('Cannot analyze chord: '+c.symbol);
+    return {...p,bar,chord,beats:Number.isFinite(c.beats)&&c.beats>0?c.beats:4,offset:mod(p.root-root),quality:quality(p)};
+   }));
+   const blues=major&&[0,5,7].every(d=>events.some(c=>c.offset===d&&seventh(c)));
+   const diatonic=c=>{
+    const q=c.quality,d=c.offset;
+    if(major&&seventh(c)&&d!==7)return blues&&[0,5].includes(d);
+    return expected[d]===q||q==='open'&&expected[d]!==undefined||!major&&(d===7&&q==='M'||d===11&&q==='d');
+   };
+   const borrowed=c=>major&&(c.offset===5&&c.quality==='m'||[3,8,10].includes(c.offset)&&c.quality==='M'||c.offset===2&&c.quality==='d');
+   const at=i=>i>=0&&i<events.length?events[i]:loop&&events.length>1?events[(i+events.length)%events.length]:null;
+   const rows=events.map((c,i)=>{
+    const next=at(i+1);let role=diatonic(c)?'diatonic':borrowed(c)?'borrowed':'unexplained',target=null,relation=null;
+    if(next&&diatonic(next)&&dominant(c)&&(!blues||c.offset===7)){
+     if(mod(c.root+5)===next.root)relation='dominant';
+     else if(seventh(c)&&mod(c.root-1)===next.root)relation='tritone';
+     // A plain diatonic I–IV is not automatically a tonicization. A chromatic
+     // dominant seventh or an actual preceding applied ii supplies that evidence.
+     const prev=at(i-1),appliedPair=prev&&['m','d'].includes(prev.quality)&&mod(prev.root-next.root)===2;
+     if(next.offset!==0&&diatonic(c)&&!seventh(c)&&!appliedPair)relation=null;
+     if(relation){target=(i+1)%events.length;role=next.offset===0?'dominant':relation==='tritone'?'tritone':'secondary';}
+    }
+    return {...c,index:i,role,target,relation,iiV:false,cadence:null,phraseEnd:false,label:baseRoman(c)};
+   });
+   for(const row of rows){
+    if(row.target!==null){
+     const target=rows[row.target],targetDegree=baseRoman(target).match(/^[b#]*[ivIV]+/)[0];
+     row.label=(row.relation==='tritone'?'subV':'V')+row.q+(target.offset===0?'':'/'+targetDegree);
+     const prev=at(row.index-1);
+     if(prev&&['m','d'].includes(prev.quality)&&mod(prev.root-target.root)===2){
+      row.iiV=true;const pre=rows[(row.index-1+rows.length)%rows.length];
+      if(pre.role==='unexplained')pre.role='applied-predominant';
+      pre.approachTarget=row.target;
+     }
+     if(target.offset===0&&diatonic(target))row.cadence=row.iiV?'ii-V-I':row.relation==='tritone'?'subV-I':'V-I';
+    }
+    // An unresolved ii–V is still evidence for its implied tonic. Keep it
+    // distinct from an observed cadence: no destination chord is invented.
+    // Minor ii is half-diminished; a plain minor ii principally suggests major.
+    const previous=at(row.index-1);
+    if(!row.cadence&&row.offset===7&&dominant(row)){
+     const pair=previous&&mod(previous.root-root)===2&&(major?previous.quality==='m':previous.quality==='d');
+     row.impliedTonic={root,mode,strength:pair?'ii-V':'V'};
+     if(pair){row.iiV=true;const pre=rows[(row.index-1+rows.length)%rows.length];pre.approachTonic={root,mode};}
+    }
+    const next=at(row.index+1);
+    if(!row.cadence&&next&&next.offset===0&&diatonic(next)){
+     if(row.offset===5&&row.quality==='M')row.cadence='IV-I';
+     if(major&&row.offset===5&&row.quality==='m')row.cadence='iv-I';
+     if(row.offset===10&&row.quality==='M')row.cadence='bVII-I';
+     if(!major&&row.offset===7&&row.quality==='m')row.cadence='v-i';
+    }
+    if(row.cadence){const dest=at(row.index+1);row.phraseEnd=row.index===rows.length-1||dest?.bar%4===3||dest?.bar%4===0;}
+   }
+   // Bass note names are a presentation choice, separate from canonical bass degrees.
+   for(const row of rows)if(row.bassName)row.label+='/'+row.bassName;
+   const total=rows.reduce((n,c)=>n+c.beats,0);
+   return {key:{root,mode,tonic},loop,blues,events:rows,totalBeats:total,unexplainedBeats:rows.filter(c=>c.role==='unexplained').reduce((n,c)=>n+c.beats,0)};
+  }
+  function tritoneRoot(target){const c=parse(target);if(!c)throw Error('Invalid tritone target');const upper=spellInterval(c.rootName,1,1);
+   // Retain the existing readability contract for Ab/Db/Eb/Gb targets: prefer
+   // A/D/E/G to Bbb/Ebb/Fb/Abb; D and G targets still correctly use Eb and Ab.
+   return /bb|##/.test(upper)||upper==='Fb'?names[mod(c.root+1)]:upper;}
+
  return seirenCompatibility
   ? {parse,chordTones,pitchName,spellChord}
-  : {parse,chordTones,spellInterval,keyName,spellPitch,spellChord,transposeSymbol,romanNumeral};
+  : {parse,chordTones,spellInterval,keyName,spellPitch,spellChord,transposeSymbol,romanNumeral,analyzeHarmony,tritoneRoot};
 }

@@ -1,3 +1,4 @@
+import {mountMelodyWorkflow} from './melody-workflow-ui.js?v=seiren-web-20261103';
 import {phraseProfiles,normalizePhraseMode} from './piano-motion.js?v=2.0.0';
 // Presentation only. Move the original nodes so IDs, listeners, validation,
 // history, audio routing and project compatibility keep their existing owners.
@@ -69,6 +70,7 @@ export function mountSeirenUI(lab) {
   };
   $('style').addEventListener('change', syncStyles);
   compare.addEventListener('click', () => queueMicrotask(syncStyles));
+  new MutationObserver(syncStyles).observe($('grid'),{childList:true});
   syncStyles();
   for (const id of ['ml-status', 'ml-error', 'ml-progress-wrap']) notices.append($(id));
   // Keep the note tools and popovers inside the MelodyWorkspace host: its
@@ -169,4 +171,5 @@ export function mountSeirenUI(lab) {
   observer.observe(lab.roll.scroll);
   lab.roll.initialized = false;
   lab.draw(lab.roll.accompaniment);
+  mountMelodyWorkflow(lab);
 }

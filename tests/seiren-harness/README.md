@@ -47,3 +47,11 @@ The same test command includes `piano-phrase.test.mjs`: 7,776 pre-change origina
 ## Strict piano audit
 
 `piano-audit.test.mjs` adds all 18 first-bar fingerprints in each meter with fills off, Demo local-density checks, three original vocal-like phrase fixtures with per-pattern two/four note-count contrast (relative to two), low-register safety, light eighth alternation and sustain-aware CC64 export audit across all patterns/meters/fixtures and pickup. Old `piano-phrase` golden files now explicitly exercise pianoRevision 1; new projects use revision 2. No old fixture was regenerated. See `docs/piano-audit-20261027.md` for the user-approved compatibility decision.
+
+## Web melody workflow and original-audio tempo
+
+`audio-stretch.test.mjs` verifies duration, pitch, stereo linkage, unchanged originals, short clips and end-of-file handling. `workflow-browser.cjs URL` runs the real MIDI/WAV import, draft restore, versions/undo, original-audio stretch workers, pickup/loop scheduling, cancellation and mobile following. Both browser scripts accept `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` and `SEIREN_SCREENSHOT_DIR`. See `docs/web-melody-20261103.md` for scope and limitations.
+
+## Bilingual glass interface
+
+`language.test.mjs` checks musical notation, pattern codes, all style/pattern English captions and dynamic tempo/accessibility copy. `language-browser.cjs URL` checks language persistence, unchanged option values and project/selection, switching during playback, dynamic notices, MIDI/project export, and 375/390px layouts. See `docs/glass-language-20261103.md`.

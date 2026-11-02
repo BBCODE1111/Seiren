@@ -1,0 +1,23 @@
+.melody-steps{display:flex;flex-basis:100%;align-items:center;gap:14px;flex-wrap:wrap;color:#345548;font-size:13px}
+.melody-steps strong{font-size:17px}.workflow-route{margin-left:auto;font-size:11px;color:#53695e}
+body.seiren .seiren-topbar{flex-wrap:wrap}
+body.seiren #melodyWorkspace>.score{grid-column:1/-1;position:sticky;top:0;z-index:12;padding:8px 12px!important;background:#f4f2e7e8;backdrop-filter:blur(16px);border:1px solid #84988d;border-radius:5px}
+body.seiren .seiren-inspector{grid-row:5}
+.melody-score-tools{display:flex;align-items:center;gap:12px;margin-bottom:5px;font-size:12px;color:#496256}
+.melody-score-tools span{font-size:11px}.melody-score-tools button{margin-left:auto;min-height:36px!important}
+.harmony-versions{font-size:12px;border-top:1px solid #91a19455;padding-top:5px}
+.harmony-versions summary{cursor:pointer;padding:6px}.harmony-versions>div{display:flex;align-items:end;gap:8px;flex-wrap:wrap;padding:8px}
+.harmony-versions label{display:flex;flex-direction:column;gap:6px}.harmony-versions p{padding:0 8px;max-height:64px;overflow:auto;line-height:1.6}
+.melody-audition{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 12px;padding:10px;background:#eef0e6bd;border-radius:4px}
+.melody-audition label{display:flex;align-items:center;gap:10px;font-size:12px}.melody-audition p{flex-basis:100%;margin:0;font-size:11px}
+body.seiren .melody-audition button[aria-pressed=true]{background:#557a70!important;color:white!important}
+body.seiren .bar.playing{box-shadow:inset 0 0 0 2px #557a70;border-radius:4px}
+body.seiren .bar-cue{min-height:32px!important}
+body.seiren .seiren-editor,body.seiren .seiren-inspector{background:#f4f2e7d4}
+body.seiren button:focus-visible,body.seiren summary:focus-visible{outline:3px solid #32695b;outline-offset:3px}
+@media(max-width:900px){body.seiren .seiren-inspector{grid-row:auto}.workflow-route{display:none}}
+@media(max-width:600px){.melody-steps{gap:6px}.melody-steps strong{font-size:15px}#melodyStep{font-size:11px;flex-basis:100%}.melody-score-tools span{display:none}body.seiren #melodyWorkspace>.score{padding:5px 8px!important}.melody-score-tools{margin:0}.harmony-versions summary{padding:4px}.melody-audition label{flex-wrap:wrap;width:100%}.melody-audition select{width:100%}body.seiren .seiren-transport{z-index:25}.harmony-versions>div{max-height:145px;overflow:auto}.harmony-versions select{max-width:230px}body.seiren .bar-cue{min-height:40px!important}}
+
+body.seiren .melody-audition .audition-help{order:2;line-height:1.5}body.seiren .melody-audition .audition-source{order:0}.melody-audition button{order:1}body.seiren .seiren-editor>.harmony-versions{border-top:0;border-bottom:1px solid #91a19455;margin-bottom:10px;padding:0 0 5px}.seiren-chord-actions{position:relative}.seiren-more .seiren-ideas{flex-wrap:wrap;padding:10px 0;border:0;background:transparent}.seiren-more .seiren-ideas label{flex-basis:100%;min-width:0}.seiren-more .seiren-ideas select{width:100%;min-width:0}
+
+body.seiren .seiren-editor>.harmony-versions{margin-top:0}body.seiren .harmony-versions>summary{min-height:32px;padding:4px 6px}.melody-audition .audition-source{flex-direction:row!important;align-items:center!important}.melody-audition .audition-source select{min-width:180px}body.seiren .audio-overlays{margin:8px 0}body.seiren .seiren-topbar .melody-upload{margin:0}

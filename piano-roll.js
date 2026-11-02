@@ -35,7 +35,7 @@ export class PianoRoll {
     group.querySelector('[data-edge=end]').setAttribute('x', width - handle);
     group.querySelector('.note-label').textContent = width > 32 && this.zoom>=2 ? pitchName(note.pitch,this.keySignature,true) : '';
   }
-  setPlayhead(beat){if(!this.playhead)return;this.playhead.setAttribute('visibility',beat===null?'hidden':'visible');if(beat!==null){this.playhead.setAttribute('x1',this.x(beat));this.playhead.setAttribute('x2',this.x(beat));const x=this.x(beat);if(x<this.scroll.scrollLeft+this.left||x>this.scroll.scrollLeft+this.scroll.clientWidth-35)this.scroll.scrollLeft=Math.max(0,x-this.left-40);}}
+  setPlayhead(beat){if(!this.playhead)return;this.playhead.setAttribute('visibility',beat===null?'hidden':'visible');if(beat!==null){this.playhead.setAttribute('x1',this.x(beat));this.playhead.setAttribute('x2',this.x(beat));const x=this.x(beat);if(this.followPlayback!==false&&(x<this.scroll.scrollLeft+this.left||x>this.scroll.scrollLeft+this.scroll.clientWidth-35))this.scroll.scrollLeft=Math.max(0,x-this.left-40);}}
   setTool(tool) { this.cancel(); this.tool=tool; this.svg.dataset.tool=tool; }
   select(index, additive=false) {
     if(!additive)this.selection.clear();

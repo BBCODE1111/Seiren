@@ -12,6 +12,8 @@ export function validateProject(data){
  if(!Array.isArray(data.bars)||!data.bars.length||data.bars.length>512)throw Error('Invalid chart length.');
  const m=data.melody;
  if(m){
+  if(m.reviewRequired!==undefined&&typeof m.reviewRequired!=='boolean')throw Error('Invalid melody review state.');
+  m.reviewRequired=m.reviewRequired===true;
   if(!Array.isArray(m.notes))throw Error('Invalid melody.');validatePickup(m.pickupBeats,m.meter);if(!Number.isFinite(m.downbeatTime)||typeof m.repeatPickup!=='boolean')throw Error('Invalid alignment.');if(m.notes.length)validateMelody(m.notes,{pickupBeats:m.pickupBeats});
   if(!Number.isFinite(m.bpm)||m.bpm<30||m.bpm>300||!Number.isInteger(m.key?.root)||m.key.root<0||m.key.root>11||!['major','minor'].includes(m.key.mode))throw Error('Invalid tempo or key.');
   if(!Number.isInteger(m.meter?.numerator)||m.meter.numerator<1||m.meter.numerator>32||![1,2,4,8,16,32].includes(m.meter.denominator))throw Error('Invalid meter.');
